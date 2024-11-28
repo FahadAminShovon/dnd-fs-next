@@ -50,6 +50,13 @@
       "when": 1732830638485,
       "tag": "0006_noisy_newton_destine",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1732831625164,
+      "tag": "0007_abandoned_pandemic",
+      "breakpoints": true
     }
   ]
 }

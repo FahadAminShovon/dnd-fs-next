@@ -1,8 +1,10 @@
-import statuses, { statusesUserRelations } from './statuses';
+import statuses, {
+  statusesUserRelations,
+  statusesTasksRelations,
+} from './statuses';
 import tags, { tagsUsersRelations } from './tags';
-import tasks, { tasksUserRelations } from './tasks';
-import tasksToStatuses from './tasksToStatuses';
-import tasksToTags from './tasksToTags1';
+import tasks, { tasksUserRelations, tasksStatusRelations } from './tasks';
+import tasksToTags from './tasksToTags';
 import users, {
   usersTasksRelations,
   usersTagsRelations,
@@ -10,16 +12,17 @@ import users, {
 } from './users';
 
 export {
-  users,
-  usersTasksRelations,
+  statuses,
+  statusesUserRelations,
+  statusesTasksRelations,
   tasks,
   tasksUserRelations,
+  tasksStatusRelations,
+  tasksToTags,
   tags,
   tagsUsersRelations,
-  tasksToTags,
+  users,
+  usersTasksRelations,
   usersTagsRelations,
-  statuses,
   usersStatusesRelations,
-  statusesUserRelations,
-  tasksToStatuses,
 };

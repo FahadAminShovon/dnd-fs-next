@@ -8,6 +8,7 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
+import statuses from './statuses';
 import users from './users';
 
 const tasks = pgTable('tasks', {
@@ -24,6 +25,9 @@ const tasks = pgTable('tasks', {
     .defaultNow(),
   userId: integer().references(() => users.id, { onDelete: 'cascade' }),
   orderIndex: integer().notNull().default(0),
+  statusId: integer()
+    .notNull()
+    .references(() => statuses.id, { onDelete: 'cascade' }),
 });
 
 const tasksUserRelations = relations(tasks, ({ one }) => ({
@@ -33,6 +37,13 @@ const tasksUserRelations = relations(tasks, ({ one }) => ({
   }),
 }));
 
-export { tasksUserRelations };
+const tasksStatusRelations = relations(tasks, ({ one }) => ({
+  status: one(statuses, {
+    fields: [tasks.statusId],
+    references: [statuses.id],
+  }),
+}));
+
+export { tasksUserRelations, tasksStatusRelations };
 
 export default tasks;

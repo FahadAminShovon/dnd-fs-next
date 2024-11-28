@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import tasks from './tasks';
 import users from './users';
 
 const statuses = pgTable('statuses', {
@@ -15,6 +16,10 @@ const statusesUserRelations = relations(statuses, ({ one }) => ({
   }),
 }));
 
+const statusesTasksRelations = relations(statuses, ({ many }) => ({
+  tasks: many(tasks),
+}));
+
 export default statuses;
 
-export { statusesUserRelations };
+export { statusesUserRelations, statusesTasksRelations };
