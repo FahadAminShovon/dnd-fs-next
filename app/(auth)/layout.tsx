@@ -11,7 +11,9 @@ export default async function AuthLayout({
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <AnonymousProvider asyncUser={asyncUser}>{children}</AnonymousProvider>
+      <div className="h-dvh content-center">
+        <AnonymousProvider asyncUser={asyncUser}>{children}</AnonymousProvider>
+      </div>
     </Suspense>
   );
 }

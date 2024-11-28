@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useFormState } from 'react-dom';
 import type { Control, FieldPath, FieldValues } from 'react-hook-form';
 import {
@@ -18,7 +18,7 @@ type InputProps<T extends FieldValues> = {
   label?: string;
   placeholder?: string;
   description?: string;
-};
+} & Pick<React.ComponentProps<'input'>, 'type'>;
 
 const FormInput = <T extends FieldValues>({
   control,
@@ -26,6 +26,7 @@ const FormInput = <T extends FieldValues>({
   label,
   description,
   placeholder,
+  type,
 }: InputProps<T>) => {
   return (
     <FormField
@@ -35,7 +36,7 @@ const FormInput = <T extends FieldValues>({
         <FormItem>
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Input placeholder={placeholder} {...field} type={type} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

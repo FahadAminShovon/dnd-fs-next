@@ -7,11 +7,17 @@ type AlertProps = {
   variant: React.ComponentProps<typeof UIAlert>['variant'];
   title: string;
   description?: React.ReactNode;
+  className?: string;
 };
 
-export const Alert = ({ variant, title, description }: AlertProps) => {
+export const Alert = ({
+  variant,
+  title,
+  description,
+  className,
+}: AlertProps) => {
   return (
-    <UIAlert variant={variant}>
+    <UIAlert variant={variant} className={className}>
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>{title}</AlertTitle>
       {description && <AlertDescription>{description}</AlertDescription>}
