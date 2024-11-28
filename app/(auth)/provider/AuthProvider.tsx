@@ -1,6 +1,6 @@
 'use client';
 import { useRedirectUrl } from '@/app/hooks/useRedirectUrl';
-import { type SelectUserSchemaType, selectUserSchema } from '@/db/schema/user';
+import { type SelectUserSchemaType, selectUserSchema } from '@/db/schema/users';
 import { createRequiredContext } from '@/lib/react-utils';
 import { redirect } from 'next/navigation';
 import type React from 'react';

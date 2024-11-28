@@ -1,10 +1,8 @@
 'use server';
 
 import { db } from '@/db';
-import userTable, {
-  insertUserSchema,
-  selectUserSchema,
-} from '@/db/schema/user';
+
+import users, { insertUserSchema, selectUserSchema } from '@/db/schema/users';
 import { checkIfEmailExists } from '@/lib/server-validations';
 import bcrypt from 'bcrypt';
 import { createSession } from '../actions';
@@ -19,7 +17,6 @@ async function signupAction(
 
   if (parsed.success) {
     const isValidEmail = await checkIfEmailExists(parsed.data.email);
-    console.log('isValidEmail', isValidEmail);
     if (!isValidEmail) {
       return {
         message: 'Email already taken',
@@ -35,10 +32,7 @@ async function signupAction(
     parsedData.password = hashedPassword;
 
     try {
-      const [newUser] = await db
-        .insert(userTable)
-        .values(parsedData)
-        .returning();
+      const [newUser] = await db.insert(users).values(parsedData).returning();
 
       await createSession({ userId: newUser.id });
       return {

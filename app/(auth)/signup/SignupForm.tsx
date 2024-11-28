@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
-import { type InsertUserSchemaType, insertUserSchema } from '@/db/schema/user';
+import { type InsertUserSchemaType, insertUserSchema } from '@/db/schema/users';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import React, { useActionState, useTransition } from 'react';

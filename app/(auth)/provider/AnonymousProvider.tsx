@@ -1,6 +1,6 @@
 'use client';
 
-import type { SelectUserSchemaType } from '@/db/schema/user';
+import type { SelectUserSchemaType } from '@/db/schema/users';
 import { redirect, useSearchParams } from 'next/navigation';
 import type React from 'react';
 import { use } from 'react';

@@ -1,9 +1,13 @@
 import { passwordSchema } from '@/lib/schemas';
+import { relations } from 'drizzle-orm';
 import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import statuses from './statuses';
+import tags from './tags';
+import tasks from './tasks';
 
-const user = pgTable('user', {
+const users = pgTable('users', {
   id: serial().primaryKey(),
   username: varchar({ length: 20 }).unique().notNull(),
   email: varchar({ length: 100 }).unique().notNull(),
@@ -16,7 +20,19 @@ const user = pgTable('user', {
     .defaultNow(),
 });
 
-const insertUserSchema = createInsertSchema(user, {
+const usersTasksRelations = relations(users, ({ many }) => ({
+  tasks: many(tasks),
+}));
+
+const usersTagsRelations = relations(users, ({ many }) => ({
+  tags: many(tags),
+}));
+
+const usersStatusesRelations = relations(users, ({ many }) => ({
+  statuses: many(statuses),
+}));
+
+const insertUserSchema = createInsertSchema(users, {
   password: passwordSchema,
   firstName: z.string().min(1).max(50).trim(),
   lastName: z.string().min(1).max(50).trim(),
@@ -43,11 +59,11 @@ const insertUserSchema = createInsertSchema(user, {
     path: ['confirmPassword'],
   });
 
-const selectUserSchema = createSelectSchema(user).omit({
+const selectUserSchema = createSelectSchema(users).omit({
   password: true,
 });
 
-const signinUserSchema = createSelectSchema(user, {
+const signinUserSchema = createSelectSchema(users, {
   email: z
     .string()
     .email()
@@ -64,5 +80,6 @@ type SelectUserSchemaType = z.infer<typeof selectUserSchema>;
 export { insertUserSchema, selectUserSchema, signinUserSchema };
 
 export type { InsertUserSchemaType, SelectUserSchemaType };
+export { usersTasksRelations, usersTagsRelations, usersStatusesRelations };
 
-export default user;
+export default users;

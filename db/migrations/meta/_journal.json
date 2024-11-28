@@ -22,6 +22,34 @@
       "when": 1732739532498,
       "tag": "0002_cooing_franklin_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1732827820850,
+      "tag": "0003_fixed_forge",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1732829687071,
+      "tag": "0004_uneven_gertrude_yorkes",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1732830227667,
+      "tag": "0005_short_polaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1732830638485,
+      "tag": "0006_noisy_newton_destine",
+      "breakpoints": true
     }
   ]
 }

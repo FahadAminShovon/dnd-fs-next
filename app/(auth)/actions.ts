@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { selectUserSchema } from '@/db/schema/user';
+import { selectUserSchema } from '@/db/schema/users';
 import { env } from '@/env';
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
@@ -62,7 +62,7 @@ async function updateSession({ userId }: AuthCookiePayload) {
 const getUser = cache(async () => {
   const session = await getUserSession();
   if (session) {
-    const user = await db.query.user.findFirst({
+    const user = await db.query.users.findFirst({
       where(fields, operators) {
         return operators.eq(fields.id, session.userId);
       },

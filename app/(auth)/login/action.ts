@@ -1,9 +1,8 @@
 'use server';
 
 import { db } from '@/db';
-import { selectUserSchema, signinUserSchema } from '@/db/schema/user';
+import { selectUserSchema, signinUserSchema } from '@/db/schema/users';
 import bcrypt from 'bcrypt';
-import { redirect } from 'next/navigation';
 import { createSession } from '../actions';
 import type { AuthActionFormState } from '../auth.types';
 
@@ -16,7 +15,7 @@ async function loginAction(
 
   if (parsed.success) {
     try {
-      const user = await db.query.user.findFirst({
+      const user = await db.query.users.findFirst({
         where(fields, { eq }) {
           return eq(fields.email, parsed.data.email);
         },

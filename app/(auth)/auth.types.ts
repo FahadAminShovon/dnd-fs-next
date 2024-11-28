@@ -1,4 +1,4 @@
-import type { SelectUserSchemaType } from '@/db/schema/user';
+import type { SelectUserSchemaType } from '@/db/schema/users';
 
 type AuthActionFormState = {
   message: string;
