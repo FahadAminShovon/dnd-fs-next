@@ -1,9 +1,6 @@
-import type { SelectUserSchemaType } from '@/db/schema/users';
+import type { UserSelectSchemaType } from '@/db/schema/users';
+import type { ActionFormState } from '../types/common';
 
-type AuthActionFormState = {
-  message: string;
-  user?: SelectUserSchemaType;
-  issues?: string[];
-};
+type AuthActionFormState = ActionFormState<UserSelectSchemaType>;
 
 export type { AuthActionFormState };

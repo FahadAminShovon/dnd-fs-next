@@ -43,7 +43,7 @@ export default function LoginPage() {
             {isPending ? 'Logging in...' : 'Login'}
           </Button>
         </form>
-        {state.message && !state.user && (
+        {state.message && !state.data && (
           <Alert
             variant={'destructive'}
             title={state.message}

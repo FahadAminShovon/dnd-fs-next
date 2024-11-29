@@ -1,7 +1,13 @@
+import CreateTag from './CreateTag';
+
 function TagsPage() {
   return (
     <div>
-      <h1>Tags</h1>
+      <div className="w-full flex">
+        <div className="ml-auto">
+          <CreateTag />
+        </div>
+      </div>
     </div>
   );
 }

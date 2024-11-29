@@ -32,7 +32,7 @@ const usersStatusesRelations = relations(users, ({ many }) => ({
   statuses: many(statuses),
 }));
 
-const insertUserSchema = createInsertSchema(users, {
+const userInsertSchema = createInsertSchema(users, {
   password: passwordSchema,
   firstName: z.string().min(1).max(50).trim(),
   lastName: z.string().min(1).max(50).trim(),
@@ -59,7 +59,7 @@ const insertUserSchema = createInsertSchema(users, {
     path: ['confirmPassword'],
   });
 
-const selectUserSchema = createSelectSchema(users).omit({
+const userSelectSchema = createSelectSchema(users).omit({
   password: true,
 });
 
@@ -74,12 +74,12 @@ const signinUserSchema = createSelectSchema(users, {
   password: true,
 });
 
-type InsertUserSchemaType = z.infer<typeof insertUserSchema>;
-type SelectUserSchemaType = z.infer<typeof selectUserSchema>;
+type userInsertSchemaType = z.infer<typeof userInsertSchema>;
+type UserSelectSchemaType = z.infer<typeof userSelectSchema>;
 
-export { insertUserSchema, selectUserSchema, signinUserSchema };
+export { userInsertSchema, userSelectSchema, signinUserSchema };
 
-export type { InsertUserSchemaType, SelectUserSchemaType };
+export type { userInsertSchemaType, UserSelectSchemaType };
 export { usersTasksRelations, usersTagsRelations, usersStatusesRelations };
 
 export default users;

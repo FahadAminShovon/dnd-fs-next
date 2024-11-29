@@ -12,10 +12,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
-import { type InsertUserSchemaType, insertUserSchema } from '@/db/schema/users';
+import { userInsertSchema, type userInsertSchemaType } from '@/db/schema/users';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import React, { useActionState, useTransition } from 'react';
+import { useActionState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { signupAction } from './actions';
 
@@ -23,8 +23,8 @@ const SignupForm = () => {
   const [state, formAction] = useActionState(signupAction, { message: '' });
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<InsertUserSchemaType>({
-    resolver: zodResolver(insertUserSchema),
+  const form = useForm<userInsertSchemaType>({
+    resolver: zodResolver(userInsertSchema),
     defaultValues: {
       username: '',
       email: '',
@@ -35,7 +35,7 @@ const SignupForm = () => {
     },
   });
 
-  const handleSubmit = async (data: InsertUserSchemaType) => {
+  const handleSubmit = async (data: userInsertSchemaType) => {
     const formData = new FormData();
     formData.append('username', data.username);
     formData.append('email', data.email);
@@ -102,7 +102,7 @@ const SignupForm = () => {
             </Button>
           </form>
         </Form>
-        {state.message && !state.user && (
+        {state.message && !state.data && (
           <Alert
             variant={'destructive'}
             title={state.message}

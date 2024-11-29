@@ -1,6 +1,9 @@
 import React from 'react';
 
-function createRequiredContext<T>(): [() => T, React.Provider<T | null>] {
+function createRequiredContext<T>(): readonly [
+  () => T,
+  React.Provider<T | null>,
+] {
   const context = React.createContext<T | null>(null);
 
   const useContext = (): T => {

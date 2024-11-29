@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { selectUserSchema, signinUserSchema } from '@/db/schema/users';
+import { signinUserSchema, userSelectSchema } from '@/db/schema/users';
 import bcrypt from 'bcrypt';
 import { createSession } from '../actions';
 import type { AuthActionFormState } from '../auth.types';
@@ -37,7 +37,7 @@ async function loginAction(
       await createSession({ userId: user.id });
       return {
         message: 'User logged in successfully',
-        user: selectUserSchema.parse(user),
+        data: userSelectSchema.parse(user),
       };
     } catch (e) {
       if (e instanceof Error) {

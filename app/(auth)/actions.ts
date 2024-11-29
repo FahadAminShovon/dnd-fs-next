@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/db';
-import { selectUserSchema } from '@/db/schema/users';
+import { userSelectSchema } from '@/db/schema/users';
 import { env } from '@/env';
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
@@ -69,7 +69,7 @@ const getUser = cache(async () => {
     });
 
     if (user) {
-      return selectUserSchema.parse(user);
+      return userSelectSchema.parse(user);
     }
     return null;
   }

@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 
-import users, { insertUserSchema, selectUserSchema } from '@/db/schema/users';
+import users, { userInsertSchema, userSelectSchema } from '@/db/schema/users';
 import { checkIfEmailExists } from '@/lib/server-validations';
 import bcrypt from 'bcrypt';
 import { createSession } from '../actions';
@@ -13,7 +13,7 @@ async function signupAction(
   formData: FormData,
 ): Promise<AuthActionFormState> {
   const data = Object.fromEntries(formData.entries());
-  const parsed = await insertUserSchema.safeParse(data);
+  const parsed = await userInsertSchema.safeParse(data);
 
   if (parsed.success) {
     const isValidEmail = await checkIfEmailExists(parsed.data.email);
@@ -37,7 +37,7 @@ async function signupAction(
       await createSession({ userId: newUser.id });
       return {
         message: 'User registered successfully',
-        user: selectUserSchema.parse(newUser),
+        data: userSelectSchema.parse(newUser),
       };
     } catch (e) {
       console.log('err', e);
