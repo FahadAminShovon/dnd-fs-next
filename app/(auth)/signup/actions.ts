@@ -40,7 +40,6 @@ async function signupAction(
         data: userSelectSchema.parse(newUser),
       };
     } catch (e) {
-      console.log('err', e);
       if (e instanceof Error) {
         return {
           message: 'Something went wrong',

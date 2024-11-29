@@ -71,6 +71,13 @@
       "when": 1732877341280,
       "tag": "0009_noisy_gorgon",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1732884668379,
+      "tag": "0010_optimal_nehzno",
+      "breakpoints": true
     }
   ]
 }
