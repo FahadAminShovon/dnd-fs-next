@@ -6,8 +6,8 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
-import type { z } from 'zod';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { z } from 'zod';
 import users from './users';
 
 const tags = pgTable('tags', {
@@ -27,15 +27,20 @@ const tagsUsersRelations = relations(tags, ({ one }) => ({
   }),
 }));
 
-const tagsInsertSchema = createInsertSchema(tags).omit({
+const tagsInsertSchema = createInsertSchema(tags, {
+  userId: z.coerce.number(),
+}).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
 });
 
+const tagsSelectSchema = createSelectSchema(tags);
+
 type TagsInsertSchemaType = z.infer<typeof tagsInsertSchema>;
+type TagsSelectSchemaType = z.infer<typeof tagsSelectSchema>;
 
 export { tagsUsersRelations, tagsInsertSchema };
-export type { TagsInsertSchemaType };
+export type { TagsInsertSchemaType, TagsSelectSchemaType };
 
 export default tags;

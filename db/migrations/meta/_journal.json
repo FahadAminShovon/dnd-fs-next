@@ -57,6 +57,20 @@
       "when": 1732831625164,
       "tag": "0007_abandoned_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1732873386386,
+      "tag": "0008_equal_steel_serpent",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1732877341280,
+      "tag": "0009_noisy_gorgon",
+      "breakpoints": true
     }
   ]
 }

@@ -82,6 +82,9 @@ async function requireUser() {
     redirect('/login');
   }
   const user = await getUser();
+  if (!user) {
+    throw new Error('User not found');
+  }
   return user;
 }
 

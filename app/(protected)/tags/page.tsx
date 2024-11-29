@@ -1,11 +1,18 @@
-import CreateTag from './CreateTag';
+import SimpleCreateDialog from '@/components/simple-create-component';
+import { createTagAction, getTagsAction } from './action';
 
-function TagsPage() {
+async function TagsPage() {
+  const tags = await getTagsAction();
   return (
     <div>
       <div className="w-full flex">
+        {JSON.stringify(tags)}
         <div className="ml-auto">
-          <CreateTag />
+          <SimpleCreateDialog
+            action={createTagAction}
+            title="Create a new tag"
+            triggerButtonText="+ Create Tag"
+          />
         </div>
       </div>
     </div>
