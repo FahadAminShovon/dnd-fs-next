@@ -1,4 +1,5 @@
 'use server';
+import { type SQL, and, eq, inArray, sql } from 'drizzle-orm';
 
 import { requireUser } from '@/app/(auth)/actions';
 import type { ActionFormState } from '@/app/types/common';
@@ -9,7 +10,7 @@ import tasks, {
   tasksInsertSchema,
 } from '@/db/schema/tasks';
 import { revalidateTag, unstable_cache } from 'next/cache';
-import { tasksListSchema } from './schema';
+import { type TaskType, tasksListSchema } from './schema';
 
 type TaskCreateStateType = ActionFormState<TasksSelectSchemaType>;
 
@@ -145,4 +146,73 @@ async function getTasksActionWrapper() {
   return tasks;
 }
 
-export { taskCreateAction, getTasksActionWrapper as getTasksAction };
+async function updateTasksAction({
+  tasks: tasksToUpdate,
+}: { tasks: TaskType[] }) {
+  const parsed = tasksListSchema.safeParse(tasksToUpdate);
+
+  if (!parsed.success) {
+    throw new Error(
+      parsed.error.issues.map((issue) => issue.message).join(', '),
+    );
+  }
+
+  const groups = parsed.data.reduce(
+    (acc, task) => {
+      if (!acc[task.status.id]) {
+        acc[task.status.id] = [];
+      }
+      acc[task.status.id].push(task);
+      return acc;
+    },
+    {} as Record<number, TaskType[]>,
+  );
+
+  for (const groupKey in groups) {
+    groups[groupKey].sort((a, b) => a.orderIndex - b.orderIndex);
+    groups[groupKey].forEach((task, index) => {
+      task.orderIndex = index;
+    });
+  }
+
+  const userId = (await requireUser()).id;
+
+  // batch update tasks with new orderIndex and statusId
+  const oiSqlChunks: SQL[] = [];
+  const statusIdSqlChunks: SQL[] = [];
+  const ids = [];
+
+  oiSqlChunks.push(sql`(case`);
+  statusIdSqlChunks.push(sql`(case`);
+  for (const groupKey in groups) {
+    const group = groups[groupKey];
+    const statusId = group[0].status.id;
+    for (const task of group) {
+      statusIdSqlChunks.push(
+        sql`when ${tasks.id} = ${task.id} then CAST(${statusId} as integer)`,
+      );
+      oiSqlChunks.push(
+        sql`when ${tasks.id} = ${task.id} then CAST(${+task.orderIndex} as integer)`,
+      );
+      ids.push(task.id);
+    }
+  }
+  statusIdSqlChunks.push(sql`end)`);
+  oiSqlChunks.push(sql`end)`);
+
+  const orderIndexFinalSql: SQL = sql.join(oiSqlChunks, sql.raw(' '));
+  const statusIdFinalSql: SQL = sql.join(statusIdSqlChunks, sql.raw(' '));
+
+  await db
+    .update(tasks)
+    .set({ orderIndex: orderIndexFinalSql, statusId: statusIdFinalSql })
+    .where(and(inArray(tasks.id, ids), eq(tasks.userId, userId)));
+
+  revalidateTag('tasks-list');
+}
+
+export {
+  taskCreateAction,
+  getTasksActionWrapper as getTasksAction,
+  updateTasksAction,
+};

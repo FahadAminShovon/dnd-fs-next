@@ -29,4 +29,8 @@ const normalizedTaskSchema = tasksSelectSchema
 
 const tasksListSchema = z.array(normalizedTaskSchema);
 
+type TaskType = z.infer<typeof normalizedTaskSchema>;
+
 export { tasksListSchema };
+
+export type { TaskType };

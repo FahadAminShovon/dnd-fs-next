@@ -1,5 +1,6 @@
 'use client';
 
+import { updateTasksAction } from '@/app/(protected)/dashboard/action';
 import {
   DndContext,
   DragOverlay,
@@ -10,18 +11,20 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import type { Status, Task } from '../types/kanban';
 import { KanbanColumn } from './kanban-column';
 import { KanbanItem } from './kanban-item';
 
 interface KanbanBoardProps {
   initialTasks: Task[];
+  statuses: Status[];
 }
 
-export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
+export function KanbanBoard({ initialTasks, statuses }: KanbanBoardProps) {
   const [tasks, setTasks] = useState(initialTasks);
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -29,22 +32,6 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
-
-  const statusIds = Array.from(new Set(tasks.map((task) => task.status.id)));
-
-  const statuses: Status[] = (
-    statusIds
-      .map((id) => tasks.find((task) => task.status.id === id))
-      .filter(Boolean) as Task[]
-  )
-    .map((task) => task.status)
-    .sort((a, b) => a.id - b.id);
-
-  Array.from(new Set(tasks.map((task) => task.status))).sort(
-    (a, b) => a.id - b.id,
-  );
-
-  console.log('statuses', statuses);
 
   const getTasksByStatus = (statusId: number) => {
     return tasks
@@ -95,20 +82,30 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     });
   };
 
+  console.log('tasks', tasks);
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     if (!over) return;
 
     if (active.id !== over.id) {
-      setTasks((tasks) => {
-        const oldIndex = tasks.findIndex((task) => task.id === active.id);
-        const newIndex = tasks.findIndex((task) => task.id === over.id);
+      const oldIndex = tasks.findIndex((task) => task.id === active.id);
+      const newIndex = tasks.findIndex((task) => task.id === over.id);
 
-        return arrayMove(tasks, oldIndex, newIndex).map((task, index) => ({
+      if (
+        oldIndex === newIndex &&
+        tasks[oldIndex].status.id === tasks[newIndex].status.id
+      ) {
+        return;
+      }
+      const newTasks = arrayMove(tasks, oldIndex, newIndex).map(
+        (task, index) => ({
           ...task,
           orderIndex: index,
-        }));
-      });
+        }),
+      );
+
+      updateTasksAction({ tasks: newTasks });
+      setTasks(newTasks);
     }
 
     setActiveId(null);
