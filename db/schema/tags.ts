@@ -40,7 +40,11 @@ const tagsInsertSchema = createInsertSchema(tags, {
   updatedAt: true,
 });
 
-const tagsSelectSchema = createSelectSchema(tags);
+const tagsSelectSchema = createSelectSchema(tags).omit({
+  userId: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
 type TagsInsertSchemaType = z.infer<typeof tagsInsertSchema>;
 type TagsSelectSchemaType = z.infer<typeof tagsSelectSchema>;

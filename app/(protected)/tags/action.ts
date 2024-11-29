@@ -50,6 +50,11 @@ const getTagsAction = unstable_cache(
       where(fields, operators) {
         return operators.eq(fields.userId, userId);
       },
+      columns: {
+        userId: false,
+        createdAt: false,
+        updatedAt: false,
+      },
     });
     return tags;
   },
