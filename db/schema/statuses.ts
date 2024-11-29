@@ -46,5 +46,6 @@ export {
   statusesUserRelations,
   statusesTasksRelations,
   statusInsertSchema,
+  statusSelectSchema,
   type StatusSelectSchemaType,
 };

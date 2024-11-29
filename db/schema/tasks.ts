@@ -11,6 +11,7 @@ import {
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 import statuses from './statuses';
+import tasksToTags from './tasksToTags';
 import users from './users';
 
 const tasks = pgTable('tasks', {
@@ -48,6 +49,10 @@ const tasksStatusRelations = relations(tasks, ({ one }) => ({
   }),
 }));
 
+const tasksRelationWithTags = relations(tasks, ({ many }) => ({
+  tasksToTags: many(tasksToTags),
+}));
+
 const tasksInsertSchema = createInsertSchema(tasks, {
   title: z.string().min(1).max(255).trim(),
   description: z.string().default(''),
@@ -76,6 +81,7 @@ export {
   tasksStatusRelations,
   tasksInsertSchema,
   tasksSelectSchema,
+  tasksRelationWithTags,
   type TasksSelectSchemaType,
 };
 

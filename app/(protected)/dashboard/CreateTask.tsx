@@ -69,6 +69,12 @@ export default function CreateTaskDialog({
     }
   }, [state.data?.id, isPending, state.message]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset();
+    }
+  }, [isOpen]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

@@ -8,6 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
+import tasksToTags from './tasksToTags';
 import users from './users';
 
 const tags = pgTable('tags', {
@@ -27,6 +28,10 @@ const tagsUsersRelations = relations(tags, ({ one }) => ({
   }),
 }));
 
+const tagsRelationWithTasks = relations(tags, ({ many }) => ({
+  tasksToTags: many(tasksToTags),
+}));
+
 const tagsInsertSchema = createInsertSchema(tags, {
   userId: z.coerce.number(),
 }).omit({
@@ -40,7 +45,12 @@ const tagsSelectSchema = createSelectSchema(tags);
 type TagsInsertSchemaType = z.infer<typeof tagsInsertSchema>;
 type TagsSelectSchemaType = z.infer<typeof tagsSelectSchema>;
 
-export { tagsUsersRelations, tagsInsertSchema };
+export {
+  tagsUsersRelations,
+  tagsInsertSchema,
+  tagsRelationWithTasks,
+  tagsSelectSchema,
+};
 export type { TagsInsertSchemaType, TagsSelectSchemaType };
 
 export default tags;
