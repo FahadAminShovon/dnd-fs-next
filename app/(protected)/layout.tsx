@@ -1,3 +1,4 @@
+import LayoutWrapper from '@/components/LayoutWrapper';
 import { Suspense } from 'react';
 import { getUser, logOut } from '../(auth)/actions';
 import AuthProvider from '../(auth)/provider/AuthProvider';
@@ -13,7 +14,9 @@ export default async function ProtectedLayout({
   });
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <AuthProvider asyncUser={asyncUser}>{children}</AuthProvider>
+      <AuthProvider asyncUser={asyncUser}>
+        <LayoutWrapper>{children}</LayoutWrapper>
+      </AuthProvider>
     </Suspense>
   );
 }
