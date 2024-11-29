@@ -7,6 +7,9 @@ export async function checkIfEmailExists(email: string): Promise<boolean> {
     where(fields, { eq }) {
       return eq(fields.email, email);
     },
+    columns: {
+      password: false,
+    },
   }));
   return !existinEmail;
 }

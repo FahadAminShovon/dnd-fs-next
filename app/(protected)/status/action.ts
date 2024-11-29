@@ -9,6 +9,12 @@ import statuses, {
 } from '@/db/schema/statuses';
 import { revalidateTag, unstable_cache } from 'next/cache';
 
+db.query.statuses.findMany({
+  where(fields, operators) {
+    return operators.eq(fields.userId, 1);
+  },
+});
+
 type CreateStatusStateType = ActionFormState<StatusSelectSchemaType>;
 
 async function createStatusAction(

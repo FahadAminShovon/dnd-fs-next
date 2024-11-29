@@ -1,7 +1,6 @@
 'use server';
 
 import { db } from '@/db';
-import { userSelectSchema } from '@/db/schema/users';
 import { env } from '@/env';
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
@@ -66,10 +65,13 @@ const getUser = cache(async () => {
       where(fields, operators) {
         return operators.eq(fields.id, session.userId);
       },
+      columns: {
+        password: false,
+      },
     });
 
     if (user) {
-      return userSelectSchema.parse(user);
+      return user;
     }
     return null;
   }
