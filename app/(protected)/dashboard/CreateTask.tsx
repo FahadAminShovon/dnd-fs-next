@@ -43,14 +43,13 @@ const formSchema = tasksInsertSchema.omit({ userId: true });
 
 type CreateTaskProps = {
   tagsAsync: Promise<TagsSelectSchemaType[]>;
-  statusesAsync: Promise<StatusSelectSchemaType[]>;
+  statuses: StatusSelectSchemaType[];
 };
 export default function CreateTaskDialog({
   tagsAsync,
-  statusesAsync,
+  statuses,
 }: CreateTaskProps) {
   const allTags = use(tagsAsync);
-  const statuses = use(statusesAsync);
   const [isOpen, setIsOpen] = useState(false);
 
   const [state, formAction] = useActionState(taskCreateAction, {
@@ -115,7 +114,7 @@ export default function CreateTaskDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create New Task</Button>
+        <Button>Create New Task</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
