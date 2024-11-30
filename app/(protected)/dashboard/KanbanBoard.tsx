@@ -4,10 +4,10 @@ import type { StatusSelectSchemaType } from '@/db/schema/statuses';
 import {
   type DataRef,
   DndContext,
-  type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
   KeyboardSensor,
+  MouseSensor,
   PointerSensor,
   closestCorners,
   useSensor,
@@ -33,6 +33,11 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
   );
 
   const onDragStart = (event: DragStartEvent) => {
@@ -42,55 +47,55 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     }
   };
 
-  const onDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!active || !over) return;
+  // const onDragOver = (event: DragOverEvent) => {
+  //   const { active, over } = event;
+  //   if (!active || !over) return;
 
-    const activeTask = active.data as DataRef<TaskType>;
-    if (!activeTask.current) return;
+  //   const activeTask = active.data as DataRef<TaskType>;
+  //   if (!activeTask.current) return;
 
-    const taskId = activeTask.current.id;
-    const taskStatusId = activeTask.current.status.id;
+  //   const taskId = activeTask.current.id;
+  //   const taskStatusId = activeTask.current.status.id;
 
-    const overType = over.id.toString().split('-')[0] as 'task' | 'col';
+  //   const overType = over.id.toString().split('-')[0] as 'task' | 'col';
 
-    let statusIdUpdate = Number.NaN;
+  //   let statusIdUpdate = Number.NaN;
 
-    if (overType === 'col') {
-      statusIdUpdate = Number(over.id.toString().split('-')[1]);
-    } else {
-      const overTask = over.data as DataRef<TaskType>;
-      if (overTask.current) {
-        statusIdUpdate = overTask.current.status.id;
-      }
-    }
+  //   if (overType === 'col') {
+  //     statusIdUpdate = Number(over.id.toString().split('-')[1]);
+  //   } else {
+  //     const overTask = over.data as DataRef<TaskType>;
+  //     if (overTask.current) {
+  //       statusIdUpdate = overTask.current.status.id;
+  //     }
+  //   }
 
-    if (Number.isNaN(statusIdUpdate)) return;
-    const updatedStatus = allStatus.find(
-      (status) => status.id === statusIdUpdate,
-    );
-    if (!updatedStatus) return;
+  //   if (Number.isNaN(statusIdUpdate)) return;
+  //   const updatedStatus = allStatus.find(
+  //     (status) => status.id === statusIdUpdate,
+  //   );
+  //   if (!updatedStatus) return;
 
-    console.log('tasks', statusIdUpdate, taskStatusId);
+  //   console.log('tasks', statusIdUpdate, taskStatusId);
 
-    if (statusIdUpdate === taskStatusId) return;
+  //   if (statusIdUpdate === taskStatusId) return;
 
-    // only update if the status is different
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          status: {
-            id: updatedStatus.id,
-            name: updatedStatus.name,
-          },
-        };
-      }
-      return task;
-    });
+  //   // only update if the status is different
+  //   const updatedTasks = tasks.map((task) => {
+  //     if (task.id === taskId) {
+  //       return {
+  //         ...task,
+  //         status: {
+  //           id: updatedStatus.id,
+  //           name: updatedStatus.name,
+  //         },
+  //       };
+  //     }
+  //     return task;
+  //   });
 
-    setTasks(updatedTasks);
-  };
+  //   setTasks(updatedTasks);
+  // };
 
   const onDragEnd = () => {
     setActiveTask(null);
@@ -101,7 +106,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
       <DndContext
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
-        onDragOver={onDragOver}
+        // onDragOver={onDragOver}
         collisionDetection={closestCorners}
         sensors={sensors}
       >
