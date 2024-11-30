@@ -1,8 +1,26 @@
 import type { Task } from '@/types/kanban';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type ItemProps = {
   item: Task;
 };
+
+const SortableItem = ({ item }: ItemProps) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: `task-${item.id}`, data: item });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Item item={item} />
+    </div>
+  );
+};
+
 const Item = ({ item }: ItemProps) => {
   return (
     <div className="p-4 border">
@@ -13,4 +31,4 @@ const Item = ({ item }: ItemProps) => {
   );
 };
 
-export default Item;
+export { Item, SortableItem };
