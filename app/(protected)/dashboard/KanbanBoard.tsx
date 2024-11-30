@@ -80,9 +80,9 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
         if (
           activeTask &&
           overTask &&
-          activeTask.status.id !== overTask.status.id
+          activeTask.statusId !== overTask.statusId
         ) {
-          activeTask.status.id = overTask.status.id;
+          activeTask.statusId = overTask.statusId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
 
@@ -97,62 +97,13 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     setTasks((tasks) => {
       const activeTask = tasks.find((task) => task.id === activeTaskId);
       if (activeTask) {
-        activeTask.status.id = columnId;
+        activeTask.statusId = columnId;
         return [...tasks];
       }
 
       return tasks;
     });
   };
-
-  //   const { active, over } = event;
-  //   if (!active || !over) return;
-
-  //   const activeTask = active.data as DataRef<TaskType>;
-  //   if (!activeTask.current) return;
-
-  //   const taskId = activeTask.current.id;
-  //   const taskStatusId = activeTask.current.status.id;
-
-  //   const overType = over.id.toString().split('-')[0] as 'task' | 'col';
-
-  //   let statusIdUpdate = Number.NaN;
-
-  //   if (overType === 'col') {
-  //     statusIdUpdate = Number(over.id.toString().split('-')[1]);
-  //   } else {
-  //     const overTask = over.data as DataRef<TaskType>;
-  //     if (overTask.current) {
-  //       statusIdUpdate = overTask.current.status.id;
-  //     }
-  //   }
-
-  //   if (Number.isNaN(statusIdUpdate)) return;
-  //   const updatedStatus = allStatus.find(
-  //     (status) => status.id === statusIdUpdate,
-  //   );
-  //   if (!updatedStatus) return;
-
-  //   console.log('tasks', statusIdUpdate, taskStatusId);
-
-  //   if (statusIdUpdate === taskStatusId) return;
-
-  //   // only update if the status is different
-  //   const updatedTasks = tasks.map((task) => {
-  //     if (task.id === taskId) {
-  //       return {
-  //         ...task,
-  //         status: {
-  //           id: updatedStatus.id,
-  //           name: updatedStatus.name,
-  //         },
-  //       };
-  //     }
-  //     return task;
-  //   });
-
-  //   setTasks(updatedTasks);
-  // };
 
   const onDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
@@ -165,9 +116,18 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     const activeIndexInInitialTasks = initialTasks.findIndex(
       (task) => task.id === activeId,
     );
-    const activeIndexInTasks = tasks.findIndex((task) => task.id === activeId);
+    const activeStatusInInitialTasks =
+      initialTasks[activeIndexInInitialTasks].statusId;
 
-    if (activeIndexInInitialTasks === activeIndexInTasks) return;
+    const activeIndexInTasks = tasks.findIndex((task) => task.id === activeId);
+    const activeStatusInTasks = tasks[activeIndexInTasks].statusId;
+
+    if (
+      activeIndexInInitialTasks === activeIndexInTasks &&
+      activeStatusInInitialTasks === activeStatusInTasks
+    ) {
+      return;
+    }
 
     startTransition(() => {
       updateTasksAction({
@@ -187,7 +147,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
       >
         {allStatus.map((status) => {
           const statusTasks = tasks.filter(
-            (task) => task.status.id === status.id,
+            (task) => task.statusId === status.id,
           );
           return <Column key={status.id} status={status} tasks={statusTasks} />;
         })}

@@ -1,4 +1,3 @@
-import { statusSelectSchema } from '@/db/schema/statuses';
 import { tagsSelectSchema } from '@/db/schema/tags';
 import { tasksSelectSchema } from '@/db/schema/tasks';
 import { z } from 'zod';
@@ -9,6 +8,7 @@ const normalizedTaskSchema = tasksSelectSchema
     title: true,
     description: true,
     orderIndex: true,
+    statusId: true,
   })
   .merge(
     z.object({
@@ -20,10 +20,6 @@ const normalizedTaskSchema = tasksSelectSchema
           }),
         }),
       ),
-      status: statusSelectSchema.pick({
-        id: true,
-        name: true,
-      }),
     }),
   );
 

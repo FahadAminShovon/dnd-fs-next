@@ -26,7 +26,7 @@ const Item = ({ item }: ItemProps) => {
     <div className="p-4 border">
       <h3>{item.title}</h3>
       <p>{item.description}</p>
-      <p className="bg-cyan-400 w-max px-2 py-1">{item.status.name}</p>
+      {/* <p className="bg-cyan-400 w-max px-2 py-1">{item.status.name}</p> */}
     </div>
   );
 };

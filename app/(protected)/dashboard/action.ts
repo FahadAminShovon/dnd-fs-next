@@ -100,6 +100,7 @@ const getTasksAction = unstable_cache(
         title: true,
         description: true,
         orderIndex: true,
+        statusId: true,
       },
       with: {
         tasksToTags: {
@@ -117,12 +118,6 @@ const getTasksAction = unstable_cache(
           },
           extra: {
             taskId: true,
-          },
-        },
-        status: {
-          columns: {
-            id: true,
-            name: true,
           },
         },
       },
@@ -163,10 +158,10 @@ async function updateTasksAction({
 
   const groups = parsed.data.reduce(
     (acc, task) => {
-      if (!acc[task.status.id]) {
-        acc[task.status.id] = [];
+      if (!acc[task.statusId]) {
+        acc[task.statusId] = [];
       }
-      acc[task.status.id].push(task);
+      acc[task.statusId].push(task);
       return acc;
     },
     {} as Record<number, TaskType[]>,
@@ -189,7 +184,7 @@ async function updateTasksAction({
   statusIdSqlChunks.push(sql`(case`);
   for (const groupKey in groups) {
     const group = groups[groupKey];
-    const statusId = group[0].status.id;
+    const statusId = group[0].statusId;
     for (const task of group) {
       statusIdSqlChunks.push(
         sql`when ${tasks.id} = ${task.id} then CAST(${statusId} as integer)`,
