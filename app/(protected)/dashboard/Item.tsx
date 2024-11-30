@@ -7,15 +7,27 @@ type ItemProps = {
 };
 
 const SortableItem = ({ item }: ItemProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: `task-${item.id}` });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: `task-${item.id}` });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={isDragging ? 'bg-gray-400' : ''}
+    >
       <Item item={item} />
     </div>
   );

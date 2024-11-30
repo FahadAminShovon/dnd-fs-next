@@ -1,7 +1,7 @@
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
-import { useDroppable } from '@dnd-kit/core';
 import {
   SortableContext,
+  useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useMemo } from 'react';
@@ -14,7 +14,7 @@ type ColumnProps = {
 };
 
 const Column = ({ status, tasks }: ColumnProps) => {
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef } = useSortable({
     id: `col-${status.id}`,
   });
   const tasksIds = useMemo(

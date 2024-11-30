@@ -10,7 +10,6 @@ import {
   KeyboardSensor,
   MouseSensor,
   PointerSensor,
-  closestCorners,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -59,11 +58,14 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     const activeId = active.id;
     const overId = over.id;
 
+    console.log('activeId', event);
+
     if (activeId === overId) return;
 
     const isOverATask = overId.toString().startsWith('task');
 
     const activeTaskId = Number.parseInt(activeId.toString().split('-')[1], 10);
+
     if (Number.isNaN(activeTaskId)) return;
 
     // putting task over another task
@@ -76,6 +78,8 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
         const overIndex = tasks.findIndex((task) => task.id === overTaskId);
         const overTask = tasks[overIndex];
+
+        console.log('activeIdx', activeIndex, 'overIdx', overIndex);
 
         if (
           activeTask &&
@@ -142,7 +146,6 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
-        collisionDetection={closestCorners}
         sensors={sensors}
       >
         {allStatus.map((status) => {
