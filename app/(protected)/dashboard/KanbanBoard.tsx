@@ -43,7 +43,41 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   };
 
   const onDragOver = (event: DragOverEvent) => {
-    console.log('event', event);
+    const { active, over } = event;
+    if (!active || !over) return;
+
+    const taskId = Number.parseInt(active.id.toString().split('-')[1]);
+    const overType = over.id.toString().split('-')[0] as 'task' | 'col';
+
+    let statusId = Number.NaN;
+
+    if (overType === 'col') {
+      statusId = Number(over.id.toString().split('-')[1]);
+    } else {
+      const overTask = over.data as DataRef<TaskType>;
+      if (overTask.current) {
+        statusId = overTask.current.status.id;
+      }
+    }
+
+    if (Number.isNaN(statusId)) return;
+    const updatedStatus = allStatus.find((status) => status.id === statusId);
+    if (!updatedStatus) return;
+
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          status: {
+            id: updatedStatus.id,
+            name: updatedStatus.name,
+          },
+        };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
   };
 
   const onDragEnd = () => {
