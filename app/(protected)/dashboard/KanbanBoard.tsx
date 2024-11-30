@@ -2,7 +2,6 @@
 
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
 import {
-  type DataRef,
   DndContext,
   type DragEndEvent,
   type DragOverEvent,
@@ -45,10 +44,12 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   );
 
   const onDragStart = (event: DragStartEvent) => {
-    const activeTask = event.active.data as DataRef<TaskType>;
-    if (activeTask.current) {
-      setActiveTask(activeTask.current);
-    }
+    const activeTaskId = Number.parseInt(
+      event.active.id.toString().split('-')[1],
+    );
+    const activeTask = tasks.find((task) => task.id === activeTaskId);
+    if (!activeTask) return;
+    setActiveTask(activeTask);
   };
 
   const onDragOver = (event: DragOverEvent) => {
@@ -60,25 +61,21 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
     if (activeId === overId) return;
 
-    const isActiveATask = activeId.toString().startsWith('task');
-    const isOverAColumn = overId.toString().startsWith('col');
     const isOverATask = overId.toString().startsWith('task');
 
-    const activeTaskDataRef = active.data as DataRef<TaskType>;
-    const activeTaskData = activeTaskDataRef.current;
-    if (!activeTaskData) return;
     const activeTaskId = Number.parseInt(activeId.toString().split('-')[1], 10);
+    if (Number.isNaN(activeTaskId)) return;
 
     // putting task over another task
-    if (isActiveATask) {
+    if (isOverATask) {
       setTasks((tasks) => {
         const overTaskId = Number.parseInt(overId.toString().split('-')[1], 10);
 
         const activeIndex = tasks.findIndex((task) => task.id === activeTaskId);
-        const overIndex = tasks.findIndex((task) => task.id === overTaskId);
+        const activeTask = tasks[activeIndex];
 
-        const activeTask = tasks.find((task) => task.id === activeTaskId);
-        const overTask = tasks.find((task) => task.id === overTaskId);
+        const overIndex = tasks.findIndex((task) => task.id === overTaskId);
+        const overTask = tasks[overIndex];
 
         if (
           activeTask &&
@@ -91,9 +88,23 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
         return arrayMove(tasks, activeIndex, overIndex);
       });
+      return;
     }
+
+    // putting task over a column
+    const columnId = Number.parseInt(overId.toString().split('-')[1], 10);
+    if (Number.isNaN(columnId)) return;
+    setTasks((tasks) => {
+      const activeTask = tasks.find((task) => task.id === activeTaskId);
+      if (activeTask) {
+        activeTask.status.id = columnId;
+        return [...tasks];
+      }
+
+      return tasks;
+    });
   };
-  // const onDragOver = (event: DragOverEvent) => {
+
   //   const { active, over } = event;
   //   if (!active || !over) return;
 
@@ -148,10 +159,8 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
     const { active, over } = event;
     if (!over) return;
-    const activeRef = active.data as DataRef<TaskType>;
-    const activeData = activeRef.current;
-    if (!activeData) return;
-    const activeId = activeData.id;
+    const activeId = Number.parseInt(active.id.toString().split('-')[1], 10);
+    if (Number.isNaN(activeId)) return;
 
     const activeIndexInInitialTasks = initialTasks.findIndex(
       (task) => task.id === activeId,

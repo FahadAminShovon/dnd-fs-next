@@ -1,14 +1,14 @@
-import type { Task } from '@/types/kanban';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type { TaskType } from './schema';
 
 type ItemProps = {
-  item: Task;
+  item: TaskType;
 };
 
 const SortableItem = ({ item }: ItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: `task-${item.id}`, data: item });
+    useSortable({ id: `task-${item.id}` });
 
   const style = {
     transform: CSS.Transform.toString(transform),
