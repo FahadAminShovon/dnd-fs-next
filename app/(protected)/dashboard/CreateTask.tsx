@@ -80,7 +80,7 @@ export default function CreateTaskDialog({
     defaultValues: {
       title: '',
       description: '',
-      statusId: statuses[0].id,
+      statusId: statuses?.[0]?.id ?? Number.NaN,
       tags: [],
     },
   });
@@ -246,7 +246,12 @@ export default function CreateTaskDialog({
               )}
             />
             <DialogFooter>
-              <Button type="submit">Create Task</Button>
+              <Button
+                type="submit"
+                disabled={Number.isNaN(form.watch('statusId'))}
+              >
+                Create Task
+              </Button>
             </DialogFooter>
           </form>
         </Form>
