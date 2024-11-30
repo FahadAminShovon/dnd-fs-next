@@ -33,7 +33,7 @@ const Column = ({ status, tasks }: ColumnProps) => {
           <CardTitle>{status.name}</CardTitle>
         </CardHeader>
         <Separator className="my-2" />
-        <CardContent className="pt-0">
+        <CardContent className="pt-0 px-2">
           {tasks.length === 0 ? (
             <p className="text-center text-muted-foreground">No tasks</p>
           ) : (

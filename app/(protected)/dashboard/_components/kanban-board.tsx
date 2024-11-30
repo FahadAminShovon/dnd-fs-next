@@ -13,8 +13,15 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import debounce from 'lodash.debounce';
 import {} from 'lucide-react';
-import { useCallback, useEffect, useState, useTransition } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from 'react';
 import { updateTasksAction } from '../action';
 import type { TaskType } from '../schema';
 import Column from './container';
@@ -30,6 +37,9 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const [_isPending, startTransition] = useTransition();
   const [mounted, setMounted] = useState(false);
+
+  // Debounced function to update the tasks
+  const debouncedSetTasks = useMemo(() => debounce(setTasks, 100), []);
 
   useEffect(() => {
     setMounted(true);
@@ -56,59 +66,70 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     setActiveTask(activeTask);
   };
 
-  const onDragOver = useCallback((event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
+  const onDragOver = useCallback(
+    (event: DragOverEvent) => {
+      const { active, over } = event;
+      if (!over) return;
 
-    const activeId = active.id;
-    const overId = over.id;
+      const activeId = active.id;
+      const overId = over.id;
 
-    if (activeId === overId) return;
+      if (activeId === overId) return;
 
-    const isOverATask = overId.toString().startsWith('task');
+      const isOverATask = overId.toString().startsWith('task');
 
-    const activeTaskId = Number.parseInt(activeId.toString().split('-')[1], 10);
+      const activeTaskId = Number.parseInt(
+        activeId.toString().split('-')[1],
+        10,
+      );
 
-    if (Number.isNaN(activeTaskId)) return;
+      if (Number.isNaN(activeTaskId)) return;
 
-    // putting task over another task
-    if (isOverATask) {
-      setTasks((tasks) => {
-        const overTaskId = Number.parseInt(overId.toString().split('-')[1], 10);
+      // putting task over another task
+      if (isOverATask) {
+        debouncedSetTasks((tasks) => {
+          const overTaskId = Number.parseInt(
+            overId.toString().split('-')[1],
+            10,
+          );
 
-        const activeIndex = tasks.findIndex((task) => task.id === activeTaskId);
-        const activeTask = tasks[activeIndex];
+          const activeIndex = tasks.findIndex(
+            (task) => task.id === activeTaskId,
+          );
+          const activeTask = tasks[activeIndex];
 
-        const overIndex = tasks.findIndex((task) => task.id === overTaskId);
-        const overTask = tasks[overIndex];
+          const overIndex = tasks.findIndex((task) => task.id === overTaskId);
+          const overTask = tasks[overIndex];
 
-        if (
-          activeTask &&
-          overTask &&
-          activeTask.statusId !== overTask.statusId
-        ) {
-          activeTask.statusId = overTask.statusId;
-          return arrayMove(tasks, activeIndex, overIndex - 1);
-        }
+          if (
+            activeTask &&
+            overTask &&
+            activeTask.statusId !== overTask.statusId
+          ) {
+            activeTask.statusId = overTask.statusId;
+            return arrayMove(tasks, activeIndex, overIndex - 1);
+          }
 
-        return arrayMove(tasks, activeIndex, overIndex);
-      });
-      return;
-    }
-
-    // putting task over a column
-    const columnId = Number.parseInt(overId.toString().split('-')[1], 10);
-    if (Number.isNaN(columnId)) return;
-    setTasks((tasks) => {
-      const activeTask = tasks.find((task) => task.id === activeTaskId);
-      if (activeTask) {
-        activeTask.statusId = columnId;
-        return [...tasks];
+          return arrayMove(tasks, activeIndex, overIndex);
+        });
+        return;
       }
 
-      return tasks;
-    });
-  }, []);
+      // putting task over a column
+      const columnId = Number.parseInt(overId.toString().split('-')[1], 10);
+      if (Number.isNaN(columnId)) return;
+      debouncedSetTasks((tasks) => {
+        const activeTask = tasks.find((task) => task.id === activeTaskId);
+        if (activeTask) {
+          activeTask.statusId = columnId;
+          return [...tasks];
+        }
+
+        return tasks;
+      });
+    },
+    [debouncedSetTasks],
+  );
 
   const onDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
