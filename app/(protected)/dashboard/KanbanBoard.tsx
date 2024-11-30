@@ -46,24 +46,36 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     const { active, over } = event;
     if (!active || !over) return;
 
-    const taskId = Number.parseInt(active.id.toString().split('-')[1]);
+    const activeTask = active.data as DataRef<TaskType>;
+    if (!activeTask.current) return;
+
+    const taskId = activeTask.current.id;
+    const taskStatusId = activeTask.current.status.id;
+
     const overType = over.id.toString().split('-')[0] as 'task' | 'col';
 
-    let statusId = Number.NaN;
+    let statusIdUpdate = Number.NaN;
 
     if (overType === 'col') {
-      statusId = Number(over.id.toString().split('-')[1]);
+      statusIdUpdate = Number(over.id.toString().split('-')[1]);
     } else {
       const overTask = over.data as DataRef<TaskType>;
       if (overTask.current) {
-        statusId = overTask.current.status.id;
+        statusIdUpdate = overTask.current.status.id;
       }
     }
 
-    if (Number.isNaN(statusId)) return;
-    const updatedStatus = allStatus.find((status) => status.id === statusId);
+    if (Number.isNaN(statusIdUpdate)) return;
+    const updatedStatus = allStatus.find(
+      (status) => status.id === statusIdUpdate,
+    );
     if (!updatedStatus) return;
 
+    console.log('tasks', statusIdUpdate, taskStatusId);
+
+    if (statusIdUpdate === taskStatusId) return;
+
+    // only update if the status is different
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
         return {
