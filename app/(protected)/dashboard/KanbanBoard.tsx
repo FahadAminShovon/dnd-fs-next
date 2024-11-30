@@ -4,6 +4,8 @@ import type { StatusSelectSchemaType } from '@/db/schema/statuses';
 import {
   type DataRef,
   DndContext,
+  type DragEndEvent,
+  type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
   KeyboardSensor,
@@ -13,10 +15,11 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { useState } from 'react';
+import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { useState, useTransition } from 'react';
 import Column from './Column';
 import { Item } from './Item';
+import { updateTasksAction } from './action';
 import type { TaskType } from './schema';
 
 type KanbanBoardProps = {
@@ -27,6 +30,7 @@ type KanbanBoardProps = {
 const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   const [tasks, setTasks] = useState(initialTasks);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
+  const [_isPending, startTransition] = useTransition();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -47,6 +51,48 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     }
   };
 
+  const onDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    if (activeId === overId) return;
+
+    const isActiveATask = activeId.toString().startsWith('task');
+    const isOverAColumn = overId.toString().startsWith('col');
+    const isOverATask = overId.toString().startsWith('task');
+
+    const activeTaskDataRef = active.data as DataRef<TaskType>;
+    const activeTaskData = activeTaskDataRef.current;
+    if (!activeTaskData) return;
+    const activeTaskId = Number.parseInt(activeId.toString().split('-')[1], 10);
+
+    // putting task over another task
+    if (isActiveATask) {
+      setTasks((tasks) => {
+        const overTaskId = Number.parseInt(overId.toString().split('-')[1], 10);
+
+        const activeIndex = tasks.findIndex((task) => task.id === activeTaskId);
+        const overIndex = tasks.findIndex((task) => task.id === overTaskId);
+
+        const activeTask = tasks.find((task) => task.id === activeTaskId);
+        const overTask = tasks.find((task) => task.id === overTaskId);
+
+        if (
+          activeTask &&
+          overTask &&
+          activeTask.status.id !== overTask.status.id
+        ) {
+          activeTask.status.id = overTask.status.id;
+          return arrayMove(tasks, activeIndex, overIndex - 1);
+        }
+
+        return arrayMove(tasks, activeIndex, overIndex);
+      });
+    }
+  };
   // const onDragOver = (event: DragOverEvent) => {
   //   const { active, over } = event;
   //   if (!active || !over) return;
@@ -97,8 +143,28 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   //   setTasks(updatedTasks);
   // };
 
-  const onDragEnd = () => {
+  const onDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
+
+    const { active, over } = event;
+    if (!over) return;
+    const activeRef = active.data as DataRef<TaskType>;
+    const activeData = activeRef.current;
+    if (!activeData) return;
+    const activeId = activeData.id;
+
+    const activeIndexInInitialTasks = initialTasks.findIndex(
+      (task) => task.id === activeId,
+    );
+    const activeIndexInTasks = tasks.findIndex((task) => task.id === activeId);
+
+    if (activeIndexInInitialTasks === activeIndexInTasks) return;
+
+    startTransition(() => {
+      updateTasksAction({
+        tasks: tasks,
+      });
+    });
   };
 
   return (
@@ -106,7 +172,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
       <DndContext
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
-        // onDragOver={onDragOver}
+        onDragOver={onDragOver}
         collisionDetection={closestCorners}
         sensors={sensors}
       >

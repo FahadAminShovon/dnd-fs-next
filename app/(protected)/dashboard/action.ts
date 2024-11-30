@@ -88,6 +88,10 @@ async function taskCreateAction(
 const getTasksAction = unstable_cache(
   async ({ userId: id }: { userId: number }) => {
     const tasks = await db.query.tasks.findMany({
+      orderBy: (fields, { asc }) => [
+        asc(fields.statusId),
+        asc(fields.orderIndex),
+      ],
       where(fields, operators) {
         return operators.eq(fields.userId, id);
       },
@@ -169,7 +173,6 @@ async function updateTasksAction({
   );
 
   for (const groupKey in groups) {
-    groups[groupKey].sort((a, b) => a.orderIndex - b.orderIndex);
     groups[groupKey].forEach((task, index) => {
       task.orderIndex = index;
     });

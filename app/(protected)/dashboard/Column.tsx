@@ -22,19 +22,19 @@ const Column = ({ status, tasks }: ColumnProps) => {
     [tasks],
   );
   return (
-    <div className="p-4 border max-w-sm">
-      <h2 className="mb-2">{status.name}</h2>
-      <hr className="mb-4" />
-      <SortableContext items={tasksIds} strategy={verticalListSortingStrategy}>
-        <ol className="space-y-2" ref={setNodeRef}>
+    <SortableContext items={tasksIds} strategy={verticalListSortingStrategy}>
+      <div className="p-4 border max-w-sm " ref={setNodeRef}>
+        <h2 className="mb-2">{status.name}</h2>
+        <hr className="mb-4" />
+        <ol className="space-y-2">
           {tasks.map((task) => (
             <li key={task.id}>
               <SortableItem key={task.id} item={task} />
             </li>
           ))}
         </ol>
-      </SortableContext>
-    </div>
+      </div>
+    </SortableContext>
   );
 };
 
