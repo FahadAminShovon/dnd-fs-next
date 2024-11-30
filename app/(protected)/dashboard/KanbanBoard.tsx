@@ -58,8 +58,6 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     const activeId = active.id;
     const overId = over.id;
 
-    console.log('activeId', event);
-
     if (activeId === overId) return;
 
     const isOverATask = overId.toString().startsWith('task');
@@ -78,8 +76,6 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
         const overIndex = tasks.findIndex((task) => task.id === overTaskId);
         const overTask = tasks[overIndex];
-
-        console.log('activeIdx', activeIndex, 'overIdx', overIndex);
 
         if (
           activeTask &&
