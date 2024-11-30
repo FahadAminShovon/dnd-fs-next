@@ -1,5 +1,4 @@
 'use client';
-
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
 import {
   DndContext,
@@ -14,11 +13,12 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { useState, useTransition } from 'react';
-import Column from './Column';
-import { Item } from './Item';
-import { updateTasksAction } from './action';
-import type { TaskType } from './schema';
+import {} from 'lucide-react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
+import { updateTasksAction } from '../action';
+import type { TaskType } from '../schema';
+import Column from './container';
+import { Item } from './task-item';
 
 type KanbanBoardProps = {
   tasks: TaskType[];
@@ -29,6 +29,11 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   const [tasks, setTasks] = useState(initialTasks);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const [_isPending, startTransition] = useTransition();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -51,7 +56,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     setActiveTask(activeTask);
   };
 
-  const onDragOver = (event: DragOverEvent) => {
+  const onDragOver = useCallback((event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -103,7 +108,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
 
       return tasks;
     });
-  };
+  }, []);
 
   const onDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
@@ -136,24 +141,38 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
     });
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <div className="flex gap-4 *:flex-1">
+    <div className="p-4 min-h-screen overflow-x-auto">
       <DndContext
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
         sensors={sensors}
       >
-        {allStatus.map((status) => {
-          const statusTasks = tasks.filter(
-            (task) => task.statusId === status.id,
-          );
-          return <Column key={status.id} status={status} tasks={statusTasks} />;
-        })}
-        <DragOverlay>{activeTask && <Item item={activeTask} />}</DragOverlay>
+        <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
+          {allStatus.map((status) => {
+            const statusTasks = tasks.filter(
+              (task) => task.statusId === status.id,
+            );
+            return (
+              <Column key={status.id} status={status} tasks={statusTasks} />
+            );
+          })}
+        </div>
+        <DragOverlay>
+          {activeTask && (
+            <div className="transform scale-105 transition-transform">
+              <Item item={activeTask} />
+            </div>
+          )}
+        </DragOverlay>
       </DndContext>
     </div>
   );
 };
 
-export default KanbanBoard;
+export { KanbanBoard };
