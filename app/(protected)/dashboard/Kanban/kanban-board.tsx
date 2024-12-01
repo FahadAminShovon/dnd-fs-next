@@ -192,7 +192,7 @@ const KanbanBoard = ({
   }
 
   return (
-    <div className="p-4 min-h-screen overflow-x-auto">
+    <div className="p-4  overflow-x-auto">
       <DndContext
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}

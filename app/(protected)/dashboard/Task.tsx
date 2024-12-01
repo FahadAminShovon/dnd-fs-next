@@ -19,7 +19,7 @@ const Task = ({
     <div className="relative group">
       <div
         className={cn(
-          'absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 gap-2',
+          'absolute right-0 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 gap-2',
           {
             hidden: isHoverDisabled,
           },
