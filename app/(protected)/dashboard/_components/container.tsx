@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
@@ -39,9 +40,19 @@ const Column = ({ status, tasks }: ColumnProps) => {
           ) : (
             <ol className="space-y-2">
               {tasks.map((task) => (
-                <li key={task.id}>
-                  <SortableItem key={task.id} item={task} />
-                </li>
+                <Button
+                  asChild
+                  key={task.id}
+                  onClick={() => {
+                    console.log('clicked');
+                  }}
+                  className="p-0"
+                  variant={'ghost'}
+                >
+                  <li className="h-full w-full">
+                    <SortableItem key={task.id} item={task} />
+                  </li>
+                </Button>
               ))}
             </ol>
           )}
