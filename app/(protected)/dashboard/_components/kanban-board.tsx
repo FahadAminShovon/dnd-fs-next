@@ -39,7 +39,8 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
   const [mounted, setMounted] = useState(false);
 
   // Debounced function to update the tasks
-  const debouncedSetTasks = useMemo(() => debounce(setTasks, 100), []);
+  // when hovering over multiple tasks at once the onDragOver function is called multiple times
+  const debouncedSetTasks = useMemo(() => debounce(setTasks, 50), []);
 
   useEffect(() => {
     setMounted(true);
