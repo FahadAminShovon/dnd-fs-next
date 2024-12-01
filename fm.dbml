@@ -4,10 +4,62 @@ Table "drizzle"."__drizzle_migrations" {
   "created_at" int8
 }
 
-Table "user" {
+Table "statuses" {
+  "id" int4 [pk, not null, increment]
+  "name" varchar(60) [unique, not null]
+  "userId" int4
+  "createdAt" timestamp [not null, default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+}
+
+Table "tags" {
+  "id" int4 [pk, not null, increment]
+  "name" varchar(50) [unique, not null]
+  "userId" int4
+  "createdAt" timestamp [not null, default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+}
+
+Table "tasks" {
+  "id" int4 [pk, not null, increment]
+  "storedTaskId" varchar(128) [unique, not null]
+  "title" varchar(255) [not null]
+  "description" text [not null, default: '']
+  "createdAt" timestamp [not null, default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "userId" int4 [not null]
+  "orderIndex" int4 [not null, default: 0]
+  "statusId" int4 [not null]
+}
+
+Table "tasks_to_tags" {
+  "task_id" int4 [not null]
+  "tag_id" int4 [not null]
+
+  Indexes {
+    (tag_id, task_id) [type: btree, name: "tasks_to_tags_tag_id_task_id_pk"]
+  }
+}
+
+Table "users" {
   "id" int4 [pk, not null, increment]
   "username" varchar(20) [unique, not null]
   "email" varchar(100) [unique, not null]
   "createdAt" timestamp [not null, default: `now()`]
-  "updatedAt" timestamp
+  "updatedAt" timestamp [default: `now()`]
+  "password" varchar(60) [not null]
+  "firstName" varchar(50) [not null]
+  "lastName" varchar(50) [not null]
 }
+
+Ref "statuses_userId_users_id_fk":"users"."id" < "statuses"."userId" [delete: cascade]
+
+Ref "tags_userId_users_id_fk":"users"."id" < "tags"."userId" [delete: cascade]
+
+Ref "tasks_statusId_statuses_id_fk":"statuses"."id" < "tasks"."statusId" [delete: cascade]
+
+Ref "tasks_userId_users_id_fk":"users"."id" < "tasks"."userId" [delete: cascade]
+
+Ref "tasks_to_tags_tag_id_tags_id_fk":"tags"."id" < "tasks_to_tags"."tag_id" [delete: cascade]
+
+Ref "tasks_to_tags_task_id_tasks_id_fk":"tasks"."id" < "tasks_to_tags"."task_id" [delete: cascade]

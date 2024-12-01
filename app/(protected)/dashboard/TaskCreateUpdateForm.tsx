@@ -94,7 +94,11 @@ const TaskCreateUpdateForm = ({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter task title" {...field} />
+                    <Input
+                      placeholder="Enter task title"
+                      {...field}
+                      autoFocus
+                    />
                   </FormControl>
                   <FormDescription>The title of your task.</FormDescription>
                   <FormMessage />
