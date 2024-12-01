@@ -12,6 +12,7 @@ const Task = ({
   listeners,
   isHoverDisabled,
   onEdit,
+  isDragging,
 }: KanbanItemTypeProps & {
   onEdit: (task: KanbanItemTypeProps['item']) => void;
 }) => {
@@ -46,7 +47,12 @@ const Task = ({
         <Button
           {...attributes}
           {...listeners}
-          className="h-auto p-0 mr-1 bg-gray-300 hover:bg-gray-300 -ml-2 -my-2 px-1 rounded-r-none"
+          className={cn(
+            'h-auto p-0 mr-1 bg-gray-300 hover:bg-gray-300 -ml-2 -my-2 px-1 rounded-r-none',
+            {
+              'cursor-grabbing': isDragging,
+            },
+          )}
           variant={'ghost'}
         >
           <Grip />

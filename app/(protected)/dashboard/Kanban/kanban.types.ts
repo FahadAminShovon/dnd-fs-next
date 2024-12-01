@@ -6,6 +6,7 @@ type KanbanItemTypeProps = {
   attributes?: DraggableAttributes;
   listeners?: SyntheticListenerMap;
   isHoverDisabled?: boolean;
+  isDragging?: boolean;
 } & {
   item: TaskType;
 };
