@@ -17,7 +17,7 @@ export default async function Page() {
           <CreateTask tagsAsync={allTagsAsync} statuses={allStatus} />
         </Suspense>
       </div>
-      <TasksList tasks={tasks} allStatus={allStatus} />
+      <TasksList tasks={tasks} allStatus={allStatus} tagsAsync={allTagsAsync} />
     </div>
   );
 }
