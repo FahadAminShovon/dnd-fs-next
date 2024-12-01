@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { getStatusesAction } from '../status/action';
 import { getTagsAction } from '../tags/action';
 import CreateTask from './CreateTask';
-import { KanbanBoard } from './_components/kanban-board';
+import TasksList from './TasksList';
 import { getTasksAction } from './action';
 
 export default async function Page() {
@@ -17,9 +17,9 @@ export default async function Page() {
           <CreateTask tagsAsync={allTagsAsync} statuses={allStatus} />
         </Suspense>
       </div>
-      <div className="space-y-2">
-        <KanbanBoard tasks={tasks} allStatus={allStatus} />
-      </div>
+      {/* <div className="space-y-2"> */}
+      <TasksList tasks={tasks} allStatus={allStatus} />
+      {/* </div> */}
     </div>
   );
 }

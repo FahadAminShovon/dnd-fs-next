@@ -26,14 +26,19 @@ import {
 import { updateTasksAction } from '../action';
 import type { TaskType } from '../schema';
 import Column from './container';
-import { Item } from './task-item';
+import type { RenderKanbanItemType } from './kanban.types';
 
 type KanbanBoardProps = {
   tasks: TaskType[];
   allStatus: StatusSelectSchemaType[];
+  renderItem: RenderKanbanItemType;
 };
 
-const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
+const KanbanBoard = ({
+  tasks: initialTasks,
+  allStatus,
+  renderItem,
+}: KanbanBoardProps) => {
   const [tasks, setTasks] = useState(initialTasks);
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const [_isPending, startTransition] = useTransition();
@@ -183,14 +188,19 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
               (task) => task.statusId === status.id,
             );
             return (
-              <Column key={status.id} status={status} tasks={statusTasks} />
+              <Column
+                key={status.id}
+                status={status}
+                tasks={statusTasks}
+                renderItem={renderItem}
+              />
             );
           })}
         </div>
         <DragOverlay>
           {activeTask && (
             <div className="transform scale-105 transition-transform">
-              <Item item={activeTask} />
+              {renderItem({ item: activeTask })}
             </div>
           )}
         </DragOverlay>

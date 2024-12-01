@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
@@ -9,14 +8,20 @@ import {
 } from '@dnd-kit/sortable';
 import { useMemo } from 'react';
 import type { TaskType } from '../schema';
+import type { RenderKanbanItemType } from './kanban.types';
 import { SortableItem } from './task-item';
+
+export type ContainerTaskItemProps = {
+  onTaskClick: (task: TaskType) => void;
+};
 
 type ColumnProps = {
   status: StatusSelectSchemaType;
   tasks: TaskType[];
+  renderItem: RenderKanbanItemType;
 };
 
-const Column = ({ status, tasks }: ColumnProps) => {
+const Column = ({ status, tasks, renderItem }: ColumnProps) => {
   const { setNodeRef } = useSortable({
     id: `col-${status.id}`,
   });
@@ -40,19 +45,9 @@ const Column = ({ status, tasks }: ColumnProps) => {
           ) : (
             <ol className="space-y-2">
               {tasks.map((task) => (
-                <Button
-                  asChild
-                  key={task.id}
-                  onClick={() => {
-                    console.log('clicked');
-                  }}
-                  className="p-0"
-                  variant={'ghost'}
-                >
-                  <li className="h-full w-full">
-                    <SortableItem key={task.id} item={task} />
-                  </li>
-                </Button>
+                <li className="h-full w-full" key={task.id}>
+                  <SortableItem item={task} renderItem={renderItem} />
+                </li>
               ))}
             </ol>
           )}
