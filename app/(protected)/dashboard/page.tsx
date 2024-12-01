@@ -1,3 +1,4 @@
+import { FullScreenLoader } from '@/components/full-screen-loader';
 import { Suspense } from 'react';
 import { getStatusesAction } from '../status/action';
 import { getTagsAction } from '../tags/action';
@@ -13,7 +14,7 @@ export default async function Page() {
   return (
     <div className="container">
       <div className="flex justify-end mb-4">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<FullScreenLoader />}>
           <CreateTask tagsAsync={allTagsAsync} statuses={allStatus} />
         </Suspense>
       </div>
