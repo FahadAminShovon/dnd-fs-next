@@ -4,6 +4,7 @@ import {
   pgTable,
   serial,
   timestamp,
+  unique,
   varchar,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
@@ -11,15 +12,19 @@ import { z } from 'zod';
 import tasksToTags from './tasksToTags';
 import users from './users';
 
-const tags = pgTable('tags', {
-  id: serial().primaryKey(),
-  name: varchar({ length: 50 }).unique().notNull(),
-  userId: integer().references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp({ mode: 'date' })
-    .$onUpdate(() => new Date())
-    .defaultNow(),
-});
+const tags = pgTable(
+  'tags',
+  {
+    id: serial().primaryKey(),
+    name: varchar({ length: 50 }).notNull(),
+    userId: integer().references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp().notNull().defaultNow(),
+    updatedAt: timestamp({ mode: 'date' })
+      .$onUpdate(() => new Date())
+      .defaultNow(),
+  },
+  (t) => [unique().on(t.name, t.userId)],
+);
 
 const tagsUsersRelations = relations(tags, ({ one }) => ({
   user: one(users, {

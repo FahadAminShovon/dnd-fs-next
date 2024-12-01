@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Grip, Pencil, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import type { KanbanItemTypeProps } from './Kanban/kanban.types';
 import { deleteTaskAction } from './action';
 
@@ -12,9 +13,11 @@ const Task = ({
   listeners,
   isHoverDisabled,
   onEdit,
+  onClick: handleClick,
   isDragging,
 }: KanbanItemTypeProps & {
   onEdit: (task: KanbanItemTypeProps['item']) => void;
+  onClick: (task: KanbanItemTypeProps['item']) => void;
 }) => {
   return (
     <div className="relative group">
@@ -31,7 +34,11 @@ const Task = ({
         </Button>
         <Button
           variant="ghost"
-          onClick={() => deleteTaskAction({ taskId: item.id })}
+          onClick={() =>
+            deleteTaskAction({ taskId: item.id }).then(({ message }) => {
+              toast(message);
+            })
+          }
         >
           <Trash2 className="text-destructive" />
         </Button>
@@ -39,9 +46,8 @@ const Task = ({
       <Card
         className="p-2 w-full sm:max-w-[300px] shadow-sm hover:shadow transition-shadow duration-200 rounded-md flex  
 		"
-        onClick={(e) => {
-          e.stopPropagation();
-          console.log('clicked');
+        onClick={() => {
+          handleClick(item);
         }}
       >
         <Button
@@ -67,7 +73,7 @@ const Task = ({
             </p>
             <div className="flex flex-wrap gap-1 mt-2">
               {item.tasksToTags.map(({ tag }) => (
-                <Badge variant="outline" className="text-xs" key={tag.id}>
+                <Badge className="text-xs" key={tag.id}>
                   {tag.name}
                 </Badge>
               ))}

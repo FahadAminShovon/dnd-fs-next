@@ -276,12 +276,17 @@ async function rearrangeTasksAction({
   revalidateTag('tasks-list');
 }
 
-async function deleteTaskAction({ taskId }: { taskId: number }) {
+async function deleteTaskAction({
+  taskId,
+}: { taskId: number }): Promise<{ message: string }> {
   const userId = (await requireUser()).id;
   await db
     .delete(tasks)
     .where(and(eq(tasks.id, taskId), eq(tasks.userId, userId)));
   revalidateTag('tasks-list');
+  return {
+    message: 'Task deleted successfully',
+  };
 }
 
 export {

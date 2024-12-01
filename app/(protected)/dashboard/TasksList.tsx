@@ -5,7 +5,8 @@ import type { TagsSelectSchemaType } from '@/db/schema/tags';
 import { useState } from 'react';
 import { KanbanBoard } from './Kanban';
 import { Task } from './Task';
-import UpdateTaskDialog from './UpdateTask';
+import UpdateTaskDialog from './TaskUpdate';
+import TaskView from './TaskView';
 import type { TaskType } from './schema';
 
 type PropType = {
@@ -19,6 +20,10 @@ const TasksList = ({ tasks, allStatus, tagsAsync }: PropType) => {
     null,
   );
 
+  const [selectedViewTask, setSelectedViewTask] = useState<TaskType | null>(
+    null,
+  );
+
   return (
     <>
       {selectedEditTask && (
@@ -27,6 +32,16 @@ const TasksList = ({ tasks, allStatus, tagsAsync }: PropType) => {
           tagsAsync={tagsAsync}
           statuses={allStatus}
           onClose={() => setSelectedEditTask(null)}
+        />
+      )}
+      {selectedViewTask && (
+        <TaskView
+          task={selectedViewTask}
+          onClose={() => setSelectedViewTask(null)}
+          onEdit={(task) => {
+            setSelectedViewTask(null);
+            setSelectedEditTask(task);
+          }}
         />
       )}
       <KanbanBoard
@@ -38,6 +53,9 @@ const TasksList = ({ tasks, allStatus, tagsAsync }: PropType) => {
               {...props}
               onEdit={(task) => {
                 setSelectedEditTask(task);
+              }}
+              onClick={(task) => {
+                setSelectedViewTask(task);
               }}
             />
           );

@@ -18,7 +18,7 @@ export default function LayoutWrapper({
             {/* <Separator orientation="vertical" className="mr-2 h-4" /> */}
           </div>
         </header>
-        <div className="p-4 pt-0">{children}</div>
+        <div className="p-4 pt-0 mx-auto container">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
