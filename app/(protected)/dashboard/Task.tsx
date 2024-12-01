@@ -3,14 +3,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Grip, Pencil, Trash2 } from 'lucide-react';
-import type { RenderKanbanItemType } from './Kanban/kanban.types';
+import type { KanbanItemTypeProps } from './Kanban/kanban.types';
 import { deleteTaskAction } from './action';
 
-const Task: RenderKanbanItemType = ({
+const Task = ({
   item,
   attributes,
   listeners,
   isHoverDisabled,
+  onEdit,
+}: KanbanItemTypeProps & {
+  onEdit: (task: KanbanItemTypeProps['item']) => void;
 }) => {
   return (
     <div className="relative group">
@@ -22,7 +25,7 @@ const Task: RenderKanbanItemType = ({
           },
         )}
       >
-        <Button variant="ghost">
+        <Button variant="ghost" onClick={() => onEdit(item)}>
           <Pencil />
         </Button>
         <Button
