@@ -9,6 +9,7 @@ import {
   KeyboardSensor,
   MouseSensor,
   PointerSensor,
+  closestCorners,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -174,6 +175,7 @@ const KanbanBoard = ({ tasks: initialTasks, allStatus }: KanbanBoardProps) => {
         onDragEnd={onDragEnd}
         onDragOver={onDragOver}
         sensors={sensors}
+        collisionDetection={closestCorners}
       >
         <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
           {allStatus.map((status) => {
