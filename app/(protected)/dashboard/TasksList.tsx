@@ -18,6 +18,7 @@ const TasksList = ({ tasks, allStatus, tagsAsync }: PropType) => {
   const [selectedEditTask, setSelectedEditTask] = useState<TaskType | null>(
     null,
   );
+
   return (
     <>
       {selectedEditTask && (

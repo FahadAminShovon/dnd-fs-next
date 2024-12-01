@@ -23,8 +23,9 @@ import {
   useState,
   useTransition,
 } from 'react';
+import { toast } from 'sonner';
 import { rearrangeTasksAction } from '../action';
-import type { TaskType } from '../schema';
+import { type TaskType, tasksListSchema } from '../schema';
 import Column from './container';
 import type { RenderKanbanItemType } from './kanban.types';
 
@@ -34,23 +35,35 @@ type KanbanBoardProps = {
   renderItem: RenderKanbanItemType;
 };
 
+const tasksDeepCopy = (tasks: TaskType[]) => {
+  const jsonParsedTasks = JSON.parse(JSON.stringify(tasks));
+  const parsedTasks = tasksListSchema.safeParse(jsonParsedTasks);
+  if (parsedTasks.success) {
+    return parsedTasks.data;
+  }
+  toast.error('Error parsing tasks');
+  return [];
+};
+
 const KanbanBoard = ({
   tasks: initialTasks,
   allStatus,
   renderItem,
 }: KanbanBoardProps) => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<TaskType[]>(() => {
+    return tasksDeepCopy(initialTasks);
+  });
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const [_isPending, startTransition] = useTransition();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setTasks(initialTasks);
-  }, [initialTasks]);
-
   // Debounced function to update the tasks
   // when hovering over multiple tasks at once the onDragOver function is called multiple times
   const debouncedSetTasks = useMemo(() => debounce(setTasks, 50), []);
+
+  useEffect(() => {
+    setTasks(tasksDeepCopy(initialTasks));
+  }, [initialTasks]);
 
   useEffect(() => {
     setMounted(true);
@@ -146,6 +159,7 @@ const KanbanBoard = ({
     setActiveTask(null);
 
     const { active, over } = event;
+
     if (!over) return;
     const activeId = Number.parseInt(active.id.toString().split('-')[1], 10);
     if (Number.isNaN(activeId)) return;

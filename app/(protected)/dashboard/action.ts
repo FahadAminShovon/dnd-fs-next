@@ -6,13 +6,16 @@ import type { ActionFormState } from '@/app/types/common';
 import { db } from '@/db';
 import { tasksToTags } from '@/db/schema';
 import tasks, {
+  type TaskUpdateSchemaType,
   type TasksSelectSchemaType,
+  taskUpdateSchema,
   tasksInsertSchema,
 } from '@/db/schema/tasks';
 import { revalidateTag, unstable_cache } from 'next/cache';
 import { type TaskType, tasksListSchema } from './schema';
 
 type TaskCreateStateType = ActionFormState<TasksSelectSchemaType>;
+type TaskUpdateStateType = ActionFormState<TaskUpdateSchemaType>;
 
 async function taskCreateAction(
   _: TaskCreateStateType,
@@ -83,6 +86,70 @@ async function taskCreateAction(
     message: 'Invalid data',
     issues: parsed.error.issues.map((issue) => issue.message),
   };
+}
+
+async function taskUpdateAction(
+  _prev: TaskUpdateStateType,
+  formData: FormData,
+): Promise<TaskUpdateStateType> {
+  const data = Object.fromEntries(formData.entries());
+  const tags = data.tags;
+  data.tags = [] as any;
+
+  if (tags && typeof tags === 'string') {
+    data.tags = JSON.parse(tags);
+  }
+
+  const parsed = taskUpdateSchema.safeParse({ ...data, id: +data.id });
+  if (!parsed.success) {
+    return {
+      message: 'Invalid data',
+      issues: parsed.error.issues.map((issue) => issue.message),
+    };
+  }
+
+  try {
+    const userId = (await requireUser()).id;
+    await db.transaction(async (tx) => {
+      const { tags, ...taskData } = parsed.data;
+      await tx
+        .update(tasks)
+        .set({
+          ...taskData,
+        })
+        .where(and(eq(tasks.id, parsed.data.id), eq(tasks.userId, userId)));
+
+      await tx
+        .delete(tasksToTags)
+        .where(eq(tasksToTags.taskId, parsed.data.id));
+
+      if (tags.length > 0) {
+        await tx.insert(tasksToTags).values(
+          tags.map((tag) => ({
+            taskId: parsed.data.id,
+            tagId: tag.id,
+          })),
+        );
+      }
+    });
+
+    revalidateTag('tasks-list');
+    return {
+      message: 'Task updated successfully',
+      data: parsed.data,
+    };
+  } catch (e) {
+    if (e instanceof Error) {
+      return {
+        message: e.message,
+        issues: [e.message],
+      };
+    }
+    return {
+      message: 'Bad request',
+      issues: ['Invalid data'],
+    };
+  }
 }
 
 const getTasksAction = unstable_cache(
@@ -219,6 +286,7 @@ async function deleteTaskAction({ taskId }: { taskId: number }) {
 
 export {
   taskCreateAction,
+  taskUpdateAction,
   getTasksActionWrapper as getTasksAction,
   rearrangeTasksAction,
   deleteTaskAction,

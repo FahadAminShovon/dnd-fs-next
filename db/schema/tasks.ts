@@ -74,7 +74,12 @@ const tasksInsertSchema = createInsertSchema(tasks, {
 
 const tasksSelectSchema = createSelectSchema(tasks);
 
+const taskUpdateSchema = tasksInsertSchema
+  .omit({ userId: true })
+  .merge(tasksSelectSchema.pick({ id: true }));
+
 type TasksSelectSchemaType = z.infer<typeof tasksSelectSchema>;
+type TaskUpdateSchemaType = z.infer<typeof taskUpdateSchema>;
 
 export {
   tasksUserRelations,
@@ -82,7 +87,9 @@ export {
   tasksInsertSchema,
   tasksSelectSchema,
   tasksRelationWithTags,
+  taskUpdateSchema,
   type TasksSelectSchemaType,
+  type TaskUpdateSchemaType,
 };
 
 export default tasks;
