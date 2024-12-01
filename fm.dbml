@@ -6,18 +6,26 @@ Table "drizzle"."__drizzle_migrations" {
 
 Table "statuses" {
   "id" int4 [pk, not null, increment]
-  "name" varchar(60) [unique, not null]
+  "name" varchar(60) [not null]
   "userId" int4
   "createdAt" timestamp [not null, default: `now()`]
   "updatedAt" timestamp [default: `now()`]
+
+  Indexes {
+    (name, userId) [type: btree, name: "statuses_name_userId_unique"]
+  }
 }
 
 Table "tags" {
   "id" int4 [pk, not null, increment]
-  "name" varchar(50) [unique, not null]
+  "name" varchar(50) [not null]
   "userId" int4
   "createdAt" timestamp [not null, default: `now()`]
   "updatedAt" timestamp [default: `now()`]
+
+  Indexes {
+    (name, userId) [type: btree, name: "tags_name_userId_unique"]
+  }
 }
 
 Table "tasks" {
