@@ -6,6 +6,7 @@ type RenderKanbanItemType = React.FC<
   {
     attributes?: DraggableAttributes;
     listeners?: SyntheticListenerMap;
+    isHoverDisabled?: boolean;
   } & {
     item: TaskType;
   }

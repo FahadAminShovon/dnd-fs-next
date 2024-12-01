@@ -26,9 +26,7 @@ const SortableItem = ({ item, renderItem }: ItemProps) => {
     <div
       ref={setNodeRef}
       style={style}
-      className={` w-full ${
-        isDragging ? 'opacity-50' : ''
-      } transition-all duration-200 ease-in-out`}
+      className={isDragging ? 'opacity-60' : ''}
     >
       <div>{renderItem({ item, attributes, listeners })}</div>
     </div>

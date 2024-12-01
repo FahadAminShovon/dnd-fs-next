@@ -1,16 +1,26 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { Grip, Pencil, Trash2 } from 'lucide-react';
 import type { RenderKanbanItemType } from './Kanban/kanban.types';
 import { deleteTaskAction } from './action';
 
-const Task: RenderKanbanItemType = ({ item, attributes, listeners }) => {
+const Task: RenderKanbanItemType = ({
+  item,
+  attributes,
+  listeners,
+  isHoverDisabled,
+}) => {
   return (
     <div className="relative group">
       <div
-        className="absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 gap-2"
-        data-actions="item-actions"
+        className={cn(
+          'absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 gap-2',
+          {
+            hidden: isHoverDisabled,
+          },
+        )}
       >
         <Button variant="ghost">
           <Pencil />
@@ -33,7 +43,7 @@ const Task: RenderKanbanItemType = ({ item, attributes, listeners }) => {
         <Button
           {...attributes}
           {...listeners}
-          className="h-auto p-0 mr-1 bg-gray-300 hover:bg-gray-400 -ml-2 -my-2 px-1 rounded-r-none"
+          className="h-auto p-0 mr-1 bg-gray-300 hover:bg-gray-300 -ml-2 -my-2 px-1 rounded-r-none"
           variant={'ghost'}
         >
           <Grip />

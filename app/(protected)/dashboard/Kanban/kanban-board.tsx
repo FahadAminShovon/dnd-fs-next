@@ -204,7 +204,7 @@ const KanbanBoard = ({
         <DragOverlay>
           {activeTask && (
             <div className="transform scale-105 transition-transform">
-              {renderItem({ item: activeTask })}
+              {renderItem({ item: activeTask, isHoverDisabled: true })}
             </div>
           )}
         </DragOverlay>
