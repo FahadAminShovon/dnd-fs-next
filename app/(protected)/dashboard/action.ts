@@ -145,7 +145,7 @@ async function getTasksActionWrapper() {
   return tasks;
 }
 
-async function updateTasksAction({
+async function rearrangeTasksAction({
   tasks: tasksToUpdate,
 }: { tasks: TaskType[] }) {
   const parsed = tasksListSchema.safeParse(tasksToUpdate);
@@ -220,6 +220,6 @@ async function deleteTaskAction({ taskId }: { taskId: number }) {
 export {
   taskCreateAction,
   getTasksActionWrapper as getTasksAction,
-  updateTasksAction,
+  rearrangeTasksAction,
   deleteTaskAction,
 };

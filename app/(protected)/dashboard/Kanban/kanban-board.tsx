@@ -23,7 +23,7 @@ import {
   useState,
   useTransition,
 } from 'react';
-import { updateTasksAction } from '../action';
+import { rearrangeTasksAction } from '../action';
 import type { TaskType } from '../schema';
 import Column from './container';
 import type { RenderKanbanItemType } from './kanban.types';
@@ -167,7 +167,7 @@ const KanbanBoard = ({
     }
 
     startTransition(() => {
-      updateTasksAction({
+      rearrangeTasksAction({
         tasks: tasks,
       });
     });
