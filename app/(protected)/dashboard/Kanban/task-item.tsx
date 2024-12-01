@@ -30,8 +30,7 @@ const SortableItem = ({ item, renderItem }: ItemProps) => {
         isDragging ? 'opacity-50' : ''
       } transition-all duration-200 ease-in-out`}
     >
-      {renderItem({ item, attributes, listeners })}
-      {/* <Item item={item} attributes={attributes} listeners={listeners} /> */}
+      <div>{renderItem({ item, attributes, listeners })}</div>
     </div>
   );
 };

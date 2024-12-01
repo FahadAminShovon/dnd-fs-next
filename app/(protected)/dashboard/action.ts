@@ -209,8 +209,17 @@ async function updateTasksAction({
   revalidateTag('tasks-list');
 }
 
+async function deleteTaskAction({ taskId }: { taskId: number }) {
+  const userId = (await requireUser()).id;
+  await db
+    .delete(tasks)
+    .where(and(eq(tasks.id, taskId), eq(tasks.userId, userId)));
+  revalidateTag('tasks-list');
+}
+
 export {
   taskCreateAction,
   getTasksActionWrapper as getTasksAction,
   updateTasksAction,
+  deleteTaskAction,
 };
