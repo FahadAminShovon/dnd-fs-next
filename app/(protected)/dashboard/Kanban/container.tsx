@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
+import { randomColors } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import {
   SortableContext,
   useSortable,
@@ -36,7 +38,14 @@ const Column = ({ status, tasks, renderItem }: ColumnProps) => {
         className="w-full sm:w-[300px] flex-shrink-0 shadow-none border border-border bg-background/50 rounded-md"
       >
         <CardHeader className="pb-2">
-          <CardTitle>{status.name}</CardTitle>
+          <CardTitle
+            className={cn(
+              '-mx-3 px-4 py-2 rounded-sm',
+              randomColors[status.id % randomColors.length],
+            )}
+          >
+            {status.name}
+          </CardTitle>
         </CardHeader>
         <Separator className="my-2" />
         <CardContent className="pt-0 px-2">

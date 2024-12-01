@@ -9,6 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import type { StatusSelectSchemaType } from '@/db/schema/statuses';
+import { randomColors } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import {} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -19,12 +22,15 @@ const TaskView = ({
   task,
   onClose,
   onEdit,
+  allStatus,
 }: {
   task: TaskType;
   onClose: () => void;
   onEdit: (task: TaskType) => void;
+  allStatus: StatusSelectSchemaType[];
 }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const status = allStatus.find((status) => status.id === task.statusId);
 
   useEffect(() => {
     if (!isOpen) {
@@ -44,7 +50,17 @@ const TaskView = ({
 
         <div>
           <h3 className="text-lg font-semibold">Status</h3>
-          <Badge variant="secondary">Tag 1</Badge>
+          <Badge
+            variant="outline"
+            className={cn(
+              status
+                ? randomColors[status.id % randomColors.length]
+                : randomColors[0],
+              'text-lg',
+            )}
+          >
+            {status ? status.name : 'No status'}
+          </Badge>
         </div>
         <div>
           <h3 className="text-lg font-semibold">Tags</h3>

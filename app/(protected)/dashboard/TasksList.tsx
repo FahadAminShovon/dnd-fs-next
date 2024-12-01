@@ -38,6 +38,7 @@ const TasksList = ({ tasks, allStatus, tagsAsync }: PropType) => {
         <TaskView
           task={selectedViewTask}
           onClose={() => setSelectedViewTask(null)}
+          allStatus={allStatus}
           onEdit={(task) => {
             setSelectedViewTask(null);
             setSelectedEditTask(task);

@@ -1,6 +1,6 @@
 'use client';
 
-import { GalleryVerticalEnd, SquareTerminal } from 'lucide-react';
+import { ChartScatter, GalleryVerticalEnd, ListTodo, Tag } from 'lucide-react';
 import type * as React from 'react';
 
 import { useUser } from '@/app/(auth)/provider/AuthProvider';
@@ -38,17 +38,17 @@ const data = {
     {
       title: 'Dashboard',
       url: '/dashboard',
-      icon: SquareTerminal,
+      icon: ListTodo,
     },
     {
       title: 'Status',
       url: '/status',
-      icon: SquareTerminal,
+      icon: ChartScatter,
     },
     {
       title: 'Tags',
       url: '/tags',
-      icon: SquareTerminal,
+      icon: Tag,
     },
 
     // {
