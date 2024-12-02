@@ -23,17 +23,22 @@ const Task = ({
     <div className="relative group">
       <div
         className={cn(
-          'absolute right-0 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2 gap-2',
+          'absolute right-0 top-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-2  space-x-2 ',
           {
             hidden: isHoverDisabled,
           },
         )}
       >
-        <Button variant="ghost" onClick={() => onEdit(item)}>
+        <Button
+          variant="ghost"
+          onClick={() => onEdit(item)}
+          className="bg-slate-200"
+        >
           <Pencil />
         </Button>
         <Button
           variant="ghost"
+          className="bg-slate-200"
           onClick={() =>
             deleteTaskAction({ taskId: item.id }).then(({ message }) => {
               toast(message);
