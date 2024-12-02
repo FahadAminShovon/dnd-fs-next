@@ -33,7 +33,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import type { z } from 'zod';
-import type { formSchema } from './CreateTask';
+import type { formSchema } from '../CreateTask';
 
 type FormSchemaType = z.infer<typeof formSchema>;
 

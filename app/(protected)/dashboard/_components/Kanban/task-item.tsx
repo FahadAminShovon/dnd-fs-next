@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { TaskType } from '../tasks.schema';
+import type { TaskType } from '../../tasks.schema';
 import type { RenderKanbanItemType } from './kanban.types';
 
 export type ItemProps = {

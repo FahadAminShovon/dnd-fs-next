@@ -24,8 +24,8 @@ import {
   useTransition,
 } from 'react';
 import { toast } from 'sonner';
-import { rearrangeTasksAction } from '../action';
-import { type TaskType, tasksListSchema } from '../tasks.schema';
+import { rearrangeTasksAction } from '../../action';
+import { type TaskType, tasksListSchema } from '../../tasks.schema';
 import Column from './container';
 import type { RenderKanbanItemType } from './kanban.types';
 
@@ -231,4 +231,4 @@ const KanbanBoard = ({
   );
 };
 
-export { KanbanBoard };
+export default KanbanBoard;

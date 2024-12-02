@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { Grip, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import type { KanbanItemTypeProps } from './Kanban/kanban.types';
+import type { KanbanItemTypeProps } from './_components/Kanban/kanban.types';
 import { deleteTaskAction } from './action';
 
 const Task = ({

@@ -3,10 +3,10 @@
 import type { StatusSelectSchemaType } from '@/db/schema/statuses';
 import type { TagsSelectSchemaType } from '@/db/schema/tags';
 import { useState } from 'react';
-import { KanbanBoard } from './Kanban';
 import { Task } from './Task';
 import UpdateTaskDialog from './TaskUpdate';
 import TaskView from './TaskView';
+import { KanbanBoard } from './_components';
 import type { TaskType } from './tasks.schema';
 
 type PropType = {

@@ -1,6 +1,6 @@
 import type { DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
-import type { TaskType } from '../tasks.schema';
+import type { TaskType } from '../../tasks.schema';
 
 type KanbanItemTypeProps = {
   attributes?: DraggableAttributes;

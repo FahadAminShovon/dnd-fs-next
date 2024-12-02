@@ -11,7 +11,7 @@ import { use, useActionState, useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type * as z from 'zod';
-import TaskCreateUpdateForm from './TaskCreateUpdateForm';
+import { TaskCreateUpdateForm } from './_components';
 import { taskCreateAction } from './action';
 
 export const formSchema = tasksInsertSchema.omit({ userId: true });
