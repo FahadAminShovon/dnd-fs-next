@@ -45,13 +45,29 @@ async function taskUpdateAction(
         })
         .where(and(eq(tasks.id, parsed.data.id), eq(tasks.userId, userId)));
 
+      // Check if the tags are created by the user
+      const validTags = await tx.query.tags.findMany({
+        where(fields, operators) {
+          return operators.and(
+            operators.eq(fields.userId, userId),
+            operators.inArray(
+              fields.id,
+              tags.map((tag) => tag.id),
+            ),
+          );
+        },
+        columns: {
+          id: true,
+        },
+      });
+
       await tx
         .delete(tasksToTags)
         .where(eq(tasksToTags.taskId, parsed.data.id));
 
-      if (tags.length > 0) {
+      if (validTags.length > 0) {
         await tx.insert(tasksToTags).values(
-          tags.map((tag) => ({
+          validTags.map((tag) => ({
             taskId: parsed.data.id,
             tagId: tag.id,
           })),

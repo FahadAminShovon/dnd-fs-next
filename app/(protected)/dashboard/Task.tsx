@@ -32,13 +32,13 @@ const Task = ({
         <Button
           variant="ghost"
           onClick={() => onEdit(item)}
-          className="bg-slate-200"
+          className="bg-gray-200 hover:bg-gray-300 "
         >
           <Pencil />
         </Button>
         <Button
           variant="ghost"
-          className="bg-slate-200"
+          className="bg-gray-200 hover:bg-gray-300"
           onClick={() =>
             deleteTaskAction({ taskId: item.id }).then(({ message }) => {
               toast(message);
