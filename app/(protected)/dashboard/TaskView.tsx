@@ -16,7 +16,7 @@ import {} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { deleteTaskAction } from './action';
-import type { TaskType } from './schema';
+import type { TaskType } from './tasks.schema';
 
 const TaskView = ({
   task,

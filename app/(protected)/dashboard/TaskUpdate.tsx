@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import type * as z from 'zod';
 import TaskCreateUpdateForm from './TaskCreateUpdateForm';
 import { taskUpdateAction } from './action';
-import type { TaskType } from './schema';
+import type { TaskType } from './tasks.schema';
 
 export const formSchema = tasksInsertSchema.omit({ userId: true });
 

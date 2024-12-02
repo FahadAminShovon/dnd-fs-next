@@ -9,7 +9,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useMemo } from 'react';
-import type { TaskType } from '../schema';
+import type { TaskType } from '../tasks.schema';
 import type { RenderKanbanItemType } from './kanban.types';
 import { SortableItem } from './task-item';
 

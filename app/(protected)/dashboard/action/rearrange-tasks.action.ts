@@ -5,7 +5,7 @@ import { requireUser } from '@/app/(auth)/actions';
 import { db } from '@/db';
 import tasks, {} from '@/db/schema/tasks';
 import { revalidateTag } from 'next/cache';
-import { type TaskType, tasksListSchema } from '../schema';
+import { type TaskType, tasksListSchema } from '../tasks.schema';
 import { TASKS_LIST_TAG } from './taskAction.cache';
 
 async function rearrangeTasksAction({

@@ -3,7 +3,7 @@ import { requireUser } from '@/app/(auth)/actions';
 import { db } from '@/db';
 
 import { unstable_cache } from 'next/cache';
-import { tasksListSchema } from '../schema';
+import { tasksListSchema } from '../tasks.schema';
 import { TASKS_LIST_TAG } from './taskAction.cache';
 
 const getTasksAction = unstable_cache(

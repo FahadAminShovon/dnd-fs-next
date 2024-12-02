@@ -7,7 +7,7 @@ import { KanbanBoard } from './Kanban';
 import { Task } from './Task';
 import UpdateTaskDialog from './TaskUpdate';
 import TaskView from './TaskView';
-import type { TaskType } from './schema';
+import type { TaskType } from './tasks.schema';
 
 type PropType = {
   tasks: TaskType[];
